@@ -1,8 +1,15 @@
 <template>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-8">
-      Управление заказами
-    </h1>
+    <div class="flex justify-between items-center mb-8">
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100">
+        Управление заказами
+      </h1>
+      <AppButton
+        :to="RoutePaths[RouteNames.ADMIN_ORDER_CREATE] as string"
+      >
+        Создать заказ
+      </AppButton>
+    </div>
 
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
       <div class="p-6">

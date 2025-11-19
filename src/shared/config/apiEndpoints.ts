@@ -30,7 +30,18 @@ export const ApiEndpoints = {
     ORDERS: {
       ALL: '/admin/orders',
       BY_ID: (id: number | string) => `/admin/orders/${id}`,
+      CREATE: '/admin/orders',
+      UPDATE: (id: number | string) => `/admin/orders/${id}`,
       UPDATE_STATUS: (id: number | string) => `/admin/orders/${id}/status`,
+      UPLOAD_FILE: (id: number | string) => `/admin/orders/${id}/files`,
+      DELETE_FILE: (orderId: number | string, fileId: number | string) => `/admin/orders/${orderId}/files/${fileId}`,
+    },
+    DASHBOARD: {
+      STATS: '/admin/dashboard/stats',
+    },
+    SETUP: {
+      CHECK: '/admin/setup/check',
+      CREATE_ADMIN: '/admin/setup/create-admin',
     },
     COMMENTS: {
       CREATE: '/admin/comments',
