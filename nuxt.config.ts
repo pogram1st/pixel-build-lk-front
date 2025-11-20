@@ -39,9 +39,10 @@ export default defineNuxtConfig({
     '@entities': '~/entities',
     '@shared': '~/shared',
   },
-  // Явно указываем директорию для middleware (относительно srcDir)
+  // Явно указываем директории (относительно srcDir)
   dir: {
-    middleware: 'middleware'
+    middleware: 'middleware',
+    layouts: 'app/layouts'
   },
   // Настройка роутера для редиректа с "/"
   router: {
