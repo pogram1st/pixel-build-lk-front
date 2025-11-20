@@ -136,11 +136,11 @@
 
             toast.showSuccess('Успешный вход!')
 
-            // Принудительно обновляем страницу чтобы server middleware увидел куку
+            // Перенаправляем через Vue Router
             const redirectTo = authStore.isAdmin
                 ? RoutePaths[RouteNames.ADMIN_DASHBOARD]
                 : RoutePaths[RouteNames.DASHBOARD]
-            window.location.href = redirectTo as string
+            await router.push(redirectTo as string)
         } catch (error: unknown) {
             console.error('Login error:', error) // Отладка
             toast.showError(error, 'login')
