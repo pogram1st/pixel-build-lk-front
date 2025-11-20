@@ -266,7 +266,7 @@
                 ...formData,
                 files: selectedFiles.value,
             })
-            toast.success('Заказ успешно создан')
+            toast.showSuccess('Заказ успешно создан')
             await router.push(RoutePaths[RouteNames.ADMIN_ORDERS] as string)
         } catch (error: unknown) {
             toast.showError(error, 'createOrder')

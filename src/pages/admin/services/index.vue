@@ -134,7 +134,7 @@
                 ...serviceForm.value,
                 price: serviceForm.value.price ? Number(serviceForm.value.price) : undefined,
             })
-            toast.success('Услуга успешно создана')
+            toast.showSuccess('Услуга успешно создана')
             showCreateModal.value = false
             serviceForm.value = { name: '', price: '', desc: '' }
             await refresh()
@@ -154,7 +154,7 @@
                 ...editForm.value,
                 price: editForm.value.price ? Number(editForm.value.price) : undefined,
             })
-            toast.success('Услуга успешно обновлена')
+            toast.showSuccess('Услуга успешно обновлена')
             showEditModal.value = false
             await refresh()
         } catch (error: unknown) {
@@ -166,7 +166,7 @@
         if (!confirm('Вы уверены, что хотите удалить эту услугу?')) return
         try {
             await adminApi.services.delete(id)
-            toast.success('Услуга успешно удалена')
+            toast.showSuccess('Услуга успешно удалена')
             await refresh()
         } catch (error: unknown) {
             toast.showError(error, 'deleteService')

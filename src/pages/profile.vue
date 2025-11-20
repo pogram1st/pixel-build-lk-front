@@ -105,7 +105,7 @@
 
         try {
             await userApi.update(user.value.id, userData.value)
-            toast.success('Профиль обновлен')
+            toast.showSuccess('Профиль обновлен')
             // Обновляем данные пользователя после успешного обновления
             const updatedUser = await userApi.getMe()
             authStore.setUser(updatedUser)
@@ -126,7 +126,7 @@
                 currentPassword: passwordData.value.currentPassword,
                 password: passwordData.value.newPassword, // Strapi использует password вместо newPassword
             })
-            toast.success('Пароль изменен')
+            toast.showSuccess('Пароль изменен')
             passwordData.value = {
                 currentPassword: '',
                 newPassword: '',

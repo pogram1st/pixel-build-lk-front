@@ -146,7 +146,7 @@
 
     const handleLogout = async () => {
         clearToken()
-        toast.success('Вы вышли из системы')
+        toast.showSuccess('Вы вышли из системы')
         await router.push(RoutePaths[RouteNames.AUTH_LOGIN] as string)
     }
 </script>

@@ -83,6 +83,7 @@
             await loginSchema.validateAt(fieldName, formData)
             delete errors[fieldName]
         } catch (error: unknown) {
+            const validationError = error as { path?: string; message: string }
             if (validationError.path) {
                 errors[validationError.path] = validationError.message
             }
@@ -95,6 +96,7 @@
             Object.keys(errors).forEach(key => delete errors[key])
             return true
         } catch (error: unknown) {
+            const validationError = error as { inner?: { path?: string; message: string }[] }
             if (validationError.inner) {
                 validationError.inner.forEach((err: { path?: string; message: string }) => {
                     if (err.path) {
@@ -132,7 +134,7 @@
             // Сохраняем в store
             authStore.setAuth(data)
 
-            toast.success('Успешный вход!')
+            toast.showSuccess('Успешный вход!')
 
             // Принудительно обновляем страницу чтобы server middleware увидел куку
             const redirectTo = authStore.isAdmin

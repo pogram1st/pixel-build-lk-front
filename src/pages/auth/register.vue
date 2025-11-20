@@ -102,6 +102,7 @@
             await registerSchema.validateAt(fieldName, formData)
             delete errors[fieldName]
         } catch (error: unknown) {
+            const validationError = error as { path?: string; message: string }
             if (validationError.path) {
                 errors[validationError.path] = validationError.message
             }
@@ -114,6 +115,7 @@
             Object.keys(errors).forEach(key => delete errors[key])
             return true
         } catch (error: unknown) {
+            const validationError = error as { inner?: { path?: string; message: string }[] }
             if (validationError.inner) {
                 validationError.inner.forEach((err: { path?: string; message: string }) => {
                     if (err.path) {
@@ -154,7 +156,7 @@
             // Сохраняем в store
             authStore.setAuth(data)
 
-            toast.success('Регистрация прошла успешно!')
+            toast.showSuccess('Регистрация прошла успешно!')
             await router.push(RoutePaths[RouteNames.DASHBOARD] as string)
         } catch (error: unknown) {
             console.error('Registration error:', error) // Отладка

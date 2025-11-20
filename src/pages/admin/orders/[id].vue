@@ -396,7 +396,7 @@
     const handleSave = async () => {
         try {
             await adminApi.orders.update(orderId, formData)
-            toast.success('Заказ обновлен')
+            toast.showSuccess('Заказ обновлен')
             await refresh()
         } catch (error: unknown) {
             toast.showError(error, 'updateOrder')
@@ -406,7 +406,7 @@
     const updateStatus = async () => {
         try {
             await adminApi.orders.updateStatus(orderId, { statusId: formData.statusId! })
-            toast.success('Статус обновлен')
+            toast.showSuccess('Статус обновлен')
             showStatusModal.value = false
             await refresh()
         } catch (error: unknown) {
@@ -419,7 +419,7 @@
 
         try {
             await adminApi.orders.uploadFile(orderId, selectedFile.value, 'PROGRESS_SCREENSHOT')
-            toast.success('Файл загружен')
+            toast.showSuccess('Файл загружен')
             showUploadModal.value = false
             selectedFile.value = null
             if (fileInput.value) fileInput.value.value = ''
@@ -434,7 +434,7 @@
 
         try {
             await adminApi.orders.deleteFile(orderId, fileId)
-            toast.success('Файл удален')
+            toast.showSuccess('Файл удален')
             await refresh()
         } catch (error: unknown) {
             toast.showError(error, 'deleteFile')
@@ -444,7 +444,7 @@
     const copyPaymentLink = async () => {
         if (formData.paymentLink) {
             await navigator.clipboard.writeText(formData.paymentLink)
-            toast.success('Ссылка скопирована')
+            toast.showSuccess('Ссылка скопирована')
         }
     }
 
@@ -454,11 +454,11 @@
             return
         }
         // TODO: Реализовать отправку ссылки клиенту
-        toast.success('Ссылка отправлена клиенту')
+        toast.showSuccess('Ссылка отправлена клиенту')
     }
 
     const handleSendToClient = () => {
         // TODO: Реализовать отправку уведомления клиенту
-        toast.success('Уведомление отправлено клиенту')
+        toast.showSuccess('Уведомление отправлено клиенту')
     }
 </script>

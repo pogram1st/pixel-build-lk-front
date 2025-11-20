@@ -145,7 +145,7 @@
                 ...statusForm.value,
                 order: Number(statusForm.value.order),
             })
-            toast.success('Статус успешно создан')
+            toast.showSuccess('Статус успешно создан')
             showCreateModal.value = false
             statusForm.value = { name: '', color: '#3b82f6', order: 0 }
             await refresh()
@@ -165,7 +165,7 @@
                 ...editForm.value,
                 order: Number(editForm.value.order),
             })
-            toast.success('Статус успешно обновлен')
+            toast.showSuccess('Статус успешно обновлен')
             showEditModal.value = false
             await refresh()
         } catch (error: unknown) {
@@ -177,7 +177,7 @@
         if (!confirm('Вы уверены, что хотите удалить этот статус?')) return
         try {
             await adminApi.statuses.delete(id)
-            toast.success('Статус успешно удален')
+            toast.showSuccess('Статус успешно удален')
             await refresh()
         } catch (error: unknown) {
             toast.showError(error, 'deleteStatus')

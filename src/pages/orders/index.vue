@@ -88,7 +88,7 @@
     const createOrder = async () => {
         try {
             await orderApi.create({ serviceId: Number(newOrder.value.serviceId) })
-            toast.success('Заказ успешно создан')
+            toast.showSuccess('Заказ успешно создан')
             showCreateModal.value = false
             newOrder.value = { serviceId: '' }
             await refresh()

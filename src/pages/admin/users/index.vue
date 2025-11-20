@@ -167,7 +167,7 @@
     const createUser = async () => {
         try {
             await adminApi.users.create(userForm.value)
-            toast.success('Пользователь успешно создан')
+            toast.showSuccess('Пользователь успешно создан')
             showCreateModal.value = false
             userForm.value = { email: '', password: '', name: '', phone: '', role: 'USER' }
             await refresh()
@@ -184,7 +184,7 @@
     const updateUser = async () => {
         try {
             await adminApi.users.update(editForm.value.id, editForm.value)
-            toast.success('Пользователь успешно обновлен')
+            toast.showSuccess('Пользователь успешно обновлен')
             showEditModal.value = false
             await refresh()
         } catch (error: unknown) {
@@ -196,7 +196,7 @@
         if (!confirm('Вы уверены, что хотите удалить этого пользователя?')) return
         try {
             await adminApi.users.delete(id)
-            toast.success('Пользователь успешно удален')
+            toast.showSuccess('Пользователь успешно удален')
             await refresh()
         } catch (error: unknown) {
             toast.showError(error, 'deleteUser')
