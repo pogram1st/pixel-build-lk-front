@@ -1,54 +1,35 @@
 import { useToast as useVueToastification } from 'vue-toastification'
 import type { ToastOptions, ToastContent } from 'vue-toastification'
+import { getErrorMessage, type ErrorContext } from './errorHandler'
 
 export function useToast() {
-  const toast = useVueToastification()
+    const toast = useVueToastification()
 
-  return {
-    success: (message: ToastContent, options?: ToastOptions) => {
-      return toast.success(message, {
-        timeout: 3000,
-        ...options,
-      })
-    },
+    const showSuccess = (message: ToastContent, options?: ToastOptions) => {
+        toast.success(message, options)
+    }
 
-    error: (message: ToastContent, options?: ToastOptions) => {
-      return toast.error(message, {
-        timeout: 4000,
-        ...options,
-      })
-    },
+    const showError = (
+        error: unknown,
+        context: ErrorContext = 'general',
+        options?: ToastOptions
+    ) => {
+        const message = getErrorMessage(error, context)
+        toast.error(message, options)
+    }
 
-    info: (message: ToastContent, options?: ToastOptions) => {
-      return toast.info(message, {
-        timeout: 3000,
-        ...options,
-      })
-    },
+    const showWarning = (message: ToastContent, options?: ToastOptions) => {
+        toast.warning(message, options)
+    }
 
-    warning: (message: ToastContent, options?: ToastOptions) => {
-      return toast.warning(message, {
-        timeout: 3500,
-        ...options,
-      })
-    },
+    const showInfo = (message: ToastContent, options?: ToastOptions) => {
+        toast.info(message, options)
+    }
 
-    default: (message: ToastContent, options?: ToastOptions) => {
-      return toast(message, options)
-    },
-
-    showError: (error: any, defaultMessage = 'Произошла ошибка') => {
-      const message = error?.response?.data?.message || error?.message || defaultMessage
-      return toast.error(message, {
-        timeout: 4000,
-      })
-    },
-
-    showSuccess: (message: string) => {
-      return toast.success(message, {
-        timeout: 3000,
-      })
-    },
-  }
+    return {
+        showSuccess,
+        showError,
+        showWarning,
+        showInfo,
+    }
 }
-

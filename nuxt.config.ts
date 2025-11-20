@@ -4,7 +4,8 @@ export default defineNuxtConfig({
   modules: [
     '@nuxtjs/tailwindcss',
     '@pinia/nuxt',
-    '@vueuse/nuxt'
+    '@vueuse/nuxt',
+    '@nuxt/eslint'
   ],
   // Настройка для работы с src/ директорией
   srcDir: 'src/',
@@ -13,9 +14,8 @@ export default defineNuxtConfig({
   css: ['~/app/styles/main.css'], // Путь относительно srcDir (src/app/styles/main.css)
   runtimeConfig: {
     public: {
-      apiBase: process.env.API_BASE_URL || 'http://localhost:3000'
+      apiBase: process.env.API_BASE_URL || 'http://localhost:1337'
     },
-    jwtSecret: process.env.JWT_SECRET || 'your-secret-key-change-in-production'
   },
   ssr: true,
   // Отключаем анимации переходов между страницами для SSR
