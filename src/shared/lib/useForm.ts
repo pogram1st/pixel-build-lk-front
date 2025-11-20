@@ -21,7 +21,7 @@ export function useForm<T extends Record<string, FormField>>(config: FormConfig<
     const fields = reactive(config.fields)
 
     const validateField = (fieldName: keyof T) => {
-        const field = fields[fieldName]
+        const field = (fields as Record<keyof T, FormField>)[fieldName]
 
         if (field.required && !field.value.trim()) {
             field.error = 'Это поле обязательно для заполнения'
@@ -62,9 +62,10 @@ export function useForm<T extends Record<string, FormField>>(config: FormConfig<
     }
 
     const getFormData = () => {
-        const data: Record<keyof T, string> = {} as any
+        const data = {} as Record<keyof T, string>
         for (const fieldName in fields) {
-            data[fieldName] = fields[fieldName].value
+            const key = fieldName as keyof T
+            data[key] = (fields as Record<keyof T, FormField>)[key].value
         }
         return data
     }

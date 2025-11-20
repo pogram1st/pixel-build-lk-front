@@ -117,6 +117,6 @@ export const authApi = {
     },
     getMe: async () => {
         const response = await api.get<UserResponse>(ApiEndpoints.AUTH.ME)
-        return unwrapStrapiResponse(response)
+        return response.data
     },
 }

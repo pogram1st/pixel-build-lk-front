@@ -1,3 +1,14 @@
 {
-    "extends": "./.nuxt/tsconfig.json"
+    "extends": "./.nuxt/tsconfig.json",
+    "compilerOptions": {
+        "baseUrl": "./src",
+        "paths": {
+            "@app/*": ["./app/*"],
+            "@pages/*": ["./pages/*"],
+            "@widgets/*": ["./widgets/*"],
+            "@features/*": ["./features/*"],
+            "@entities/*": ["./entities/*"],
+            "@shared/*": ["./shared/*"]
+        }
+    }
 }

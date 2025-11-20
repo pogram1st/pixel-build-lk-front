@@ -70,10 +70,14 @@ function addTokenToRequest(config: InternalAxiosRequestConfig): InternalAxiosReq
     return config
 }
 
-async function handle401Error(error: AxiosError, api: AxiosInstance): Promise<AxiosResponse> {
-    const originalRequest = error.config
+interface RetryableRequest extends InternalAxiosRequestConfig {
+    _retry?: boolean
+}
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
+async function handle401Error(error: AxiosError, api: AxiosInstance): Promise<AxiosResponse> {
+    const originalRequest = error.config as RetryableRequest
+
+    if (error.response?.status === 401 && originalRequest && !originalRequest._retry) {
         originalRequest._retry = true
 
         // Strapi не имеет встроенного refresh токена в стандартном виде

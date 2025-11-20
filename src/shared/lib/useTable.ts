@@ -42,11 +42,26 @@ export function useTable<T extends { id: string | number }>(config: TableConfig<
         // Сортировка
         if (sortBy.value) {
             filtered = [...filtered].sort((a, b) => {
-                const aValue = a[sortBy.value!]
-                const bValue = b[sortBy.value!]
+                const aValue = (a as Record<string, unknown>)[sortBy.value!]
+                const bValue = (b as Record<string, unknown>)[sortBy.value!]
 
-                if (aValue < bValue) return sortOrder.value === 'asc' ? -1 : 1
-                if (aValue > bValue) return sortOrder.value === 'asc' ? 1 : -1
+                if (typeof aValue === 'string' && typeof bValue === 'string') {
+                    return sortOrder.value === 'asc' 
+                        ? aValue.localeCompare(bValue)
+                        : bValue.localeCompare(aValue)
+                }
+                
+                if (typeof aValue === 'number' && typeof bValue === 'number') {
+                    if (aValue < bValue) return sortOrder.value === 'asc' ? -1 : 1
+                    if (aValue > bValue) return sortOrder.value === 'asc' ? 1 : -1
+                }
+                
+                // Для других типов конвертируем в строку
+                const aStr = String(aValue)
+                const bStr = String(bValue)
+                return sortOrder.value === 'asc' 
+                    ? aStr.localeCompare(bStr)
+                    : bStr.localeCompare(aStr)
                 return 0
             })
         }

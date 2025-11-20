@@ -30,10 +30,29 @@ export function getErrorMessage(error: unknown, context: ErrorContext = 'general
         return error
     }
 
+interface ErrorWithResponse {
+    response?: {
+        status?: number
+        data?: {
+            error?: {
+                message?: string
+                details?: Record<string, unknown>
+            }
+        }
+    }
+    error?: {
+        message?: string
+        details?: Record<string, unknown>
+    }
+    code?: string
+    message?: string
+}
+
     // Обработка ошибок от Strapi
-    const strapiError = error?.response?.data?.error || error?.error
+    const errorObj = error as ErrorWithResponse
+    const strapiError = errorObj?.response?.data?.error || errorObj?.error
     const strapiMessage = strapiError?.message
-    const status = error?.response?.status
+    const status = errorObj?.response?.status
 
     // Специфичные сообщения для разных контекстов
     const contextMessages: Record<ErrorContext, Record<number, string>> = {
@@ -261,12 +280,12 @@ export function getErrorMessage(error: unknown, context: ErrorContext = 'general
     }
 
     // Ошибки сети
-    if (error?.code === 'NETWORK_ERROR' || error?.message?.includes('Network Error')) {
+    if (errorObj?.code === 'NETWORK_ERROR' || errorObj?.message?.includes('Network Error')) {
         return 'Ошибка сети. Проверьте подключение к интернету'
     }
 
     // Таймаут
-    if (error?.code === 'TIMEOUT' || error?.message?.includes('timeout')) {
+    if (errorObj?.code === 'TIMEOUT' || errorObj?.message?.includes('timeout')) {
         return 'Превышено время ожидания. Попробуйте позже'
     }
 
