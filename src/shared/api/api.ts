@@ -6,7 +6,7 @@ import { ApiEndpoints } from '../config/apiEndpoints'
 import { CookieNames } from '../config/cookies'
 
 const API_BASE_URL =
-    process.env.API_BASE_URL || process.env.NUXT_PUBLIC_API_BASE_URL || 'http://localhost:3000'
+    process.env.API_BASE_URL || process.env.NUXT_PUBLIC_API_BASE_URL || 'http://localhost:4001'
 
 const AUTH_API_BASE_URL = 
     process.env.AUTH_API_BASE_URL || process.env.NUXT_PUBLIC_AUTH_API_BASE_URL || 'http://localhost:4000'
