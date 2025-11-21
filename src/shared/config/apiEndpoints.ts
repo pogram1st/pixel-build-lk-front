@@ -1,48 +1,62 @@
 export const ApiEndpoints = {
     AUTH: {
-        LOGIN: '/api/auth/local',
-        REGISTER: '/api/auth/local/register', // Используем стандартный Strapi endpoint
-        REFRESH: '/api/auth/refresh', // Strapi не имеет встроенного refresh, можно реализовать отдельно
-        RESET_PASSWORD: '/api/auth/forgot-password',
-        ME: '/api/users/me',
+        LOGIN: '/auth/login',
+        REGISTER: '/auth/register',
+        REFRESH: '/auth/refresh',
+        RESET_PASSWORD: '/auth/reset-password',
+        ME: '/auth/me',
+        VERIFY: '/auth/verify',
+        LOGOUT: '/auth/logout',
     },
     USER: {
-        ME: '/api/users/me',
-        UPDATE: (id: number | string) => `/api/users/${id}`,
+        ME: '/users/me',
+        UPDATE: (id: number | string) => `/users/${id}`,
     },
     ORDERS: {
-        MY: '/api/orders/my-orders',
-        BY_ID: (id: number | string) => `/api/orders/${id}`,
-        CREATE: '/api/orders',
+        MY: '/orders/my-orders',
+        BY_ID: (id: number | string) => `/orders/${id}`,
+        CREATE: '/orders',
+    },
+    BOTS: {
+        ALL: '/bots',
+        BY_ID: (id: number | string) => `/bots/${id}`,
+        CREATE: '/bots',
+        UPDATE: (id: number | string) => `/bots/${id}`,
+        DELETE: (id: number | string) => `/bots/${id}`,
+        START: (id: number | string) => `/bots/${id}/start`,
+        STOP: (id: number | string) => `/bots/${id}/stop`,
+        RESTART: (id: number | string) => `/bots/${id}/restart`,
+        STATUS: (id: number | string) => `/bots/${id}/status`,
+        WEBHOOK: (id: number | string) => `/bots/${id}/webhook`,
     },
     ADMIN: {
         SERVICES: {
-            ALL: '/api/services',
-            BY_ID: (id: number | string) => `/api/services/${id}`,
+            ALL: '/services',
+            BY_ID: (id: number | string) => `/services/${id}`,
         },
         STATUSES: {
-            ALL: '/api/statuses',
-            BY_ID: (id: number | string) => `/api/statuses/${id}`,
+            ALL: '/statuses',
+            BY_ID: (id: number | string) => `/statuses/${id}`,
         },
         USERS: {
-            ALL: '/api/admin/users',
-            BY_ID: (id: number | string) => `/api/users/${id}`,
+            ALL: '/admin/users',
+            BY_ID: (id: number | string) => `/users/${id}`,
         },
         ORDERS: {
-            ALL: '/api/admin/orders',
-            BY_ID: (id: number | string) => `/api/admin/orders/${id}`,
-            CREATE: '/api/admin/orders',
-            UPDATE: (id: number | string) => `/api/admin/orders/${id}`,
-            UPDATE_STATUS: (id: number | string) => `/api/admin/orders/${id}/status`,
-            UPLOAD_FILE: (id: number | string) => `/api/admin/orders/${id}/files`,
+            ALL: '/admin/orders',
+            BY_ID: (id: number | string) => `/admin/orders/${id}`,
+            CREATE: '/admin/orders',
+            UPDATE: (id: number | string) => `/admin/orders/${id}`,
+            UPDATE_STATUS: (id: number | string) => `/admin/orders/${id}/status`,
+            UPLOAD_FILE: (id: number | string) => `/admin/orders/${id}/files`,
             DELETE_FILE: (orderId: number | string, fileId: number | string) =>
-                `/api/admin/orders/${orderId}/files/${fileId}`,
+                `/admin/orders/${orderId}/files/${fileId}`,
         },
         DASHBOARD: {
-            STATS: '/api/admin/dashboard/stats',
+            STATS: '/admin/dashboard/stats',
         },
         COMMENTS: {
-            CREATE: '/api/comments',
+            CREATE: '/comments',
         },
     },
 } as const

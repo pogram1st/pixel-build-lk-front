@@ -6,7 +6,10 @@ import { ApiEndpoints } from '../config/apiEndpoints'
 import { CookieNames } from '../config/cookies'
 
 const API_BASE_URL =
-    process.env.API_BASE_URL || process.env.NUXT_PUBLIC_API_BASE_URL || 'http://localhost:1337'
+    process.env.API_BASE_URL || process.env.NUXT_PUBLIC_API_BASE_URL || 'http://localhost:3000'
+
+const AUTH_API_BASE_URL = 
+    process.env.AUTH_API_BASE_URL || process.env.NUXT_PUBLIC_AUTH_API_BASE_URL || 'http://localhost:4000'
 
 /**
  * Helper функция для извлечения данных из Strapi формата ответа
@@ -100,8 +103,18 @@ async function handle401Error(error: AxiosError, api: AxiosInstance): Promise<Ax
     return Promise.reject(error)
 }
 
+// API для основного бэкенда (ЛК, заказы, боты)
 const api: AxiosInstance = axios.create({
     baseURL: API_BASE_URL,
+    withCredentials: true,
+    headers: {
+        'Content-Type': 'application/json',
+    },
+})
+
+// API для auth-сервиса
+const authApi: AxiosInstance = axios.create({
+    baseURL: AUTH_API_BASE_URL,
     withCredentials: true,
     headers: {
         'Content-Type': 'application/json',
@@ -114,4 +127,11 @@ api.interceptors.response.use(
     error => handle401Error(error, api)
 )
 
+authApi.interceptors.request.use(addTokenToRequest, error => Promise.reject(error))
+authApi.interceptors.response.use(
+    response => response,
+    error => handle401Error(error, authApi)
+)
+
 export default api
+export { authApi }

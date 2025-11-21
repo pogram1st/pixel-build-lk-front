@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "../.."
+		},
+		{
+			"path": "../../../pixel-build-lk-backend"
+		},
+		{
+			"path": "../../../pixel-build-telegram-bot-constructor"
+		},
+		{
+			"path": "../../../pixel-build-auth"
+		}
+	],
+	"settings": {}
+}

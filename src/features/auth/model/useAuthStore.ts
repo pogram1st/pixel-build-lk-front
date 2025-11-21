@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { authApi, type AuthResponse, type UserResponse } from '@shared/api/authApi'
+import { authApiService, type AuthResponse, type UserResponse } from '@shared/api/authApi'
 import * as userApi from '@shared/api/userApi'
 import { CookieNames } from '@shared/config/cookies'
 
@@ -28,14 +28,13 @@ export const useAuthStore = defineStore('auth', () => {
 
     // Actions
     const login = async (email: string, password: string) => {
-        const data = await authApi.login({ email, password })
+        const data = await authApiService.login({ email, password })
         setAuth(data)
         return { data }
     }
 
     const register = async (email: string, password: string, name: string, phone?: string) => {
-        const data = await authApi.register({
-            username: email.split('@')[0],
+        const data = await authApiService.register({
             email,
             password,
             name,
@@ -97,7 +96,7 @@ export const useAuthStore = defineStore('auth', () => {
 
         try {
             setToken(token)
-            const userData = await userApi.userApi.getMe()
+            const userData = await authApiService.getMe()
 
             if (userData) {
                 setUser(userData)
@@ -138,6 +137,5 @@ export const useAuthStore = defineStore('auth', () => {
         setToken,
         initialize,
         logout,
-        clearAuth: logout,
     }
 })

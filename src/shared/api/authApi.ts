@@ -1,14 +1,12 @@
-import api, { unwrapStrapiResponse } from './api'
+import { authApi } from './api'
 import { ApiEndpoints } from '../config/apiEndpoints'
-import { CookieNames } from '../config/cookies'
 
 export interface LoginDto {
-    identifier: string // Strapi использует identifier вместо email
+    email: string
     password: string
 }
 
 export interface RegisterDto {
-    username: string
     email: string
     password: string
     name: string
@@ -16,107 +14,53 @@ export interface RegisterDto {
 }
 
 export interface AuthResponse {
-    accessToken: string // Переименовываем jwt в accessToken для совместимости
+    accessToken: string
     user: {
         id: number
-        username: string
         email: string
-        name?: string
+        name: string
         phone?: string
-        role?: {
-            type: string
-            name: string
-        }
-        confirmed: boolean
-        blocked: boolean
+        role: 'USER' | 'ADMIN'
         createdAt: string
-        updatedAt: string
     }
 }
 
 export interface UserResponse {
     id: number
-    username: string
     email: string
-    name?: string
+    name: string
     phone?: string
-    role?: {
-        id: number
-        type: string
-        name: string
-    }
-    confirmed: boolean
-    blocked: boolean
+    role: 'USER' | 'ADMIN'
     createdAt: string
-    updatedAt: string
 }
 
-export const authApi = {
-    login: async (data: { email: string; password: string }) => {
-        // Strapi требует identifier вместо email
-        const response = await api.post(ApiEndpoints.AUTH.LOGIN, {
-            identifier: data.email,
-            password: data.password,
-        })
-
-        // Стандартный Strapi endpoint возвращает данные напрямую, не в формате { data: {...} }
-        const strapiData = response.data
-
-        // Преобразуем jwt в accessToken для совместимости с фронтендом
-        const result = {
-            accessToken: strapiData.jwt,
-            user: strapiData.user,
-        }
-
-        return result
-    },
-    register: async (data: RegisterDto) => {
-        // Используем стандартный Strapi endpoint для регистрации (работает корректно)
-        const response = await api.post(ApiEndpoints.AUTH.REGISTER, {
-            username: data.name || data.username || data.email.split('@')[0], // Используем name как username
-            email: data.email,
-            password: data.password,
-            // Примечание: phone не поддерживается стандартным endpoint
-            // Его можно добавить через отдельный запрос после регистрации
-        })
-
-        // Стандартный endpoint возвращает данные напрямую
-        const strapiData = response.data
-
-        // Если есть phone, обновляем пользователя (name уже в username)
-        if (data.phone) {
-            try {
-                await api.put(`/api/users/${strapiData.user.id}`, {
-                    phone: data.phone,
-                })
-            } catch (updateError) {
-                console.warn('Could not update user with phone:', updateError)
-            }
-        }
-
-        // Преобразуем jwt в accessToken для совместимости с фронтендом
-        const result = {
-            accessToken: strapiData.jwt,
-            user: {
-                ...strapiData.user,
-                name: data.name || null,
-                phone: data.phone || null,
-            },
-        }
-
-        return result
-    },
-    refresh: async () => {
-        // Strapi не имеет встроенного refresh, можно использовать повторный запрос /api/users/me
-        // Для полноценного refresh нужно будет реализовать кастомный endpoint
-        throw new Error('Refresh not implemented for Strapi yet')
-    },
-    resetPassword: async (email: string) => {
-        const response = await api.post(ApiEndpoints.AUTH.RESET_PASSWORD, { email })
+export const authApiService = {
+    login: async (data: LoginDto): Promise<AuthResponse> => {
+        const response = await authApi.post(ApiEndpoints.AUTH.LOGIN, data)
         return response.data
     },
-    getMe: async () => {
-        const response = await api.get<UserResponse>(ApiEndpoints.AUTH.ME)
+    register: async (data: RegisterDto): Promise<AuthResponse> => {
+        const response = await authApi.post(ApiEndpoints.AUTH.REGISTER, data)
+        return response.data
+    },
+    refresh: async (): Promise<{ accessToken: string }> => {
+        const response = await authApi.post(ApiEndpoints.AUTH.REFRESH)
+        return response.data
+    },
+    resetPassword: async (email: string) => {
+        const response = await authApi.post(ApiEndpoints.AUTH.RESET_PASSWORD, { email })
+        return response.data
+    },
+    getMe: async (): Promise<UserResponse> => {
+        const response = await authApi.get(ApiEndpoints.AUTH.ME)
+        return response.data
+    },
+    verify: async (): Promise<{ valid: boolean; user: { id: number; email: string; role: string } }> => {
+        const response = await authApi.get(ApiEndpoints.AUTH.VERIFY)
+        return response.data
+    },
+    logout: async (): Promise<{ message: string }> => {
+        const response = await authApi.post(ApiEndpoints.AUTH.LOGOUT)
         return response.data
     },
 }
