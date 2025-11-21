@@ -28,7 +28,7 @@
                     <template #cell-actions="{ row }">
                         <div class="flex space-x-2">
                             <button
-                                @click="editStatus(row)"
+                                @click="editStatus(row as Status)"
                                 class="text-primary-600 hover:text-primary-800"
                             >
                                 Редактировать
@@ -112,7 +112,7 @@
     })
 
     const { data: statuses, refresh } = await useAsyncData('admin-statuses', async () => {
-        const { data } = await adminApi.statuses.getAll()
+        const data = await adminApi.statuses.getAll()
         return data
     })
 
@@ -142,8 +142,9 @@
     const createStatus = async () => {
         try {
             await adminApi.statuses.create({
-                ...statusForm.value,
-                order: Number(statusForm.value.order),
+                name: statusForm.value.name,
+                color: statusForm.value.color,
+                description: '',
             })
             toast.showSuccess('Статус успешно создан')
             showCreateModal.value = false
@@ -155,15 +156,21 @@
     }
 
     const editStatus = (status: Status) => {
-        editForm.value = { ...status }
+        editForm.value = {
+            id: status.id,
+            name: status.name,
+            color: status.color || '#3b82f6',
+            order: 0 // TODO: Add order field to Status interface
+        }
         showEditModal.value = true
     }
 
     const updateStatus = async () => {
         try {
             await adminApi.statuses.update(editForm.value.id, {
-                ...editForm.value,
-                order: Number(editForm.value.order),
+                name: editForm.value.name,
+                color: editForm.value.color,
+                description: '',
             })
             toast.showSuccess('Статус успешно обновлен')
             showEditModal.value = false

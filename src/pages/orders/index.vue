@@ -69,7 +69,7 @@
     })
 
     const { data: orders, refresh } = await useAsyncData('my-orders', async () => {
-        const { data } = await orderApi.getMyOrders()
+        const data = await orderApi.getMyOrders()
         return data
     })
 

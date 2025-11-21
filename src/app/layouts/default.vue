@@ -7,7 +7,7 @@
                 <div class="flex justify-between items-center h-16">
                     <div class="flex items-center space-x-8">
                         <NuxtLink
-                            :to="RoutePaths[RouteNames.DASHBOARD]"
+                            :to="RoutePaths[RouteNames.DASHBOARD] as string"
                             class="flex items-center space-x-2"
                         >
                             <div
@@ -21,21 +21,21 @@
                         </NuxtLink>
                         <nav class="hidden md:flex items-center space-x-1">
                             <NuxtLink
-                                :to="RoutePaths[RouteNames.DASHBOARD]"
+                                :to="RoutePaths[RouteNames.DASHBOARD] as string"
                                 class="px-4 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                                 active-class="bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400"
                             >
                                 Главная
                             </NuxtLink>
                             <NuxtLink
-                                :to="RoutePaths[RouteNames.ORDERS]"
+                                :to="RoutePaths[RouteNames.ORDERS] as string"
                                 class="px-4 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                                 active-class="bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400"
                             >
                                 Заказы
                             </NuxtLink>
                             <NuxtLink
-                                :to="RoutePaths[RouteNames.PROFILE]"
+                                :to="RoutePaths[RouteNames.PROFILE] as string"
                                 class="px-4 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                                 active-class="bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400"
                             >
@@ -105,21 +105,21 @@
                 class="md:hidden border-t border-gray-200 dark:border-gray-700 py-2"
             >
                 <NuxtLink
-                    :to="RoutePaths[RouteNames.DASHBOARD]"
+                    :to="RoutePaths[RouteNames.DASHBOARD] as string"
                     class="block px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                     @click="mobileMenuOpen = false"
                 >
                     Главная
                 </NuxtLink>
                 <NuxtLink
-                    :to="RoutePaths[RouteNames.ORDERS]"
+                    :to="RoutePaths[RouteNames.ORDERS] as string"
                     class="block px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                     @click="mobileMenuOpen = false"
                 >
                     Заказы
                 </NuxtLink>
                 <NuxtLink
-                    :to="RoutePaths[RouteNames.PROFILE]"
+                    :to="RoutePaths[RouteNames.PROFILE] as string"
                     class="block px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                     @click="mobileMenuOpen = false"
                 >
@@ -145,7 +145,7 @@
     const mobileMenuOpen = ref(false)
 
     const handleLogout = async () => {
-        clearToken()
+        authStore.logout()
         toast.showSuccess('Вы вышли из системы')
         await router.push(RoutePaths[RouteNames.AUTH_LOGIN] as string)
     }

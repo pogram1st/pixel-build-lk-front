@@ -173,7 +173,7 @@
     const mobileMenuOpen = ref(false)
 
     const handleLogout = async () => {
-        clearToken()
+        authStore.logout()
         toast.showSuccess('Вы вышли из системы')
         await router.push(RoutePaths[RouteNames.AUTH_LOGIN] as string)
     }

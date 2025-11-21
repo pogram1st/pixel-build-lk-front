@@ -12,6 +12,7 @@ export interface User extends BaseEntity {
     username: string
     email: string
     phone?: string
+    name?: string
     confirmed: boolean
     blocked: boolean
     role?: Role
@@ -37,6 +38,15 @@ export interface Order extends BaseEntity {
     assignedAdmin?: User
     comments?: Comment[]
     files?: OrderFile[]
+    history?: OrderHistory[]
+}
+
+export interface OrderHistory extends BaseEntity {
+    action: string
+    description?: string
+    metadata?: Record<string, unknown>
+    order?: Order
+    user?: User
 }
 
 export interface Service extends BaseEntity {
@@ -49,6 +59,7 @@ export interface Status extends BaseEntity {
     name: string
     color?: string
     description?: string
+    order?: number
 }
 
 export interface Comment extends BaseEntity {
@@ -62,7 +73,7 @@ export interface OrderFile extends BaseEntity {
     path: string
     size: number
     mimeType: string
-    type: 'client' | 'admin'
+    type: 'client_material' | 'admin_file' | 'progress_screenshot'
     order?: Order
     uploadedBy?: User
 }
@@ -102,6 +113,60 @@ export interface RegisterData {
     phone?: string
 }
 
+export interface CreateOrderByAdminDto {
+    userId?: number // Если создается для существующего пользователя
+    clientName: string
+    clientEmail: string
+    telegram?: string
+    whatsapp?: string
+    description: string
+    clientLink?: string
+    amount?: number
+    paymentLink?: string
+    serviceId?: number
+    statusId: number
+    assignedAdminId?: number
+    files?: File[] // Файлы для загрузки
+}
+
+export interface CreateAdminUserDto {
+    email: string
+    password: string
+    name: string
+    phone?: string
+    role?: 'USER' | 'ADMIN'
+}
+
+export interface UpdateAdminUserDto {
+    email?: string
+    name?: string
+    phone?: string
+    role?: 'USER' | 'ADMIN'
+}
+
+export interface ServiceFormData {
+    id?: number
+    name: string
+    price: string
+    description?: string
+}
+
+export interface StatusFormData {
+    id?: number
+    name: string
+    color: string
+    description?: string
+    order?: number
+}
+
+export interface UserFormData {
+    id?: number
+    email: string
+    name: string
+    phone: string
+    role: string
+}
+
 export interface AuthResponse {
     jwt: string
     user: User
@@ -118,6 +183,12 @@ export interface DashboardStats {
     activeOrders: number
     completedOrders: number
     totalRevenue: number
+    ordersToday: number
+    ordersWeek: number
+    ordersInWork: number
+    ordersAwaitingPayment: number
+    ordersCompleted: number
+    recentOrders: Order[]
     ordersByStatus: Array<{
         status: string
         count: number
@@ -132,4 +203,11 @@ export interface ValidationError {
 
 export interface FormErrors {
     [key: string]: string
+}
+
+// Типы для таблиц
+export interface TableColumn {
+    key: string
+    label: string
+    sortable?: boolean
 }

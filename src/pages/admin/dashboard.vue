@@ -74,7 +74,7 @@
                                         Заказ #{{ order.id }}
                                     </div>
                                     <div class="text-sm text-gray-500 dark:text-gray-400">
-                                        {{ order.user?.name }} ({{ order.user?.email }})
+                                        {{ order.user?.username }} ({{ order.user?.email }})
                                     </div>
                                 </div>
                                 <div
@@ -118,13 +118,14 @@
     import { RouteNames } from '@shared/config/RouteNames'
     import { RoutePaths, getAdminOrderDetailPath } from '@shared/config/RoutePaths'
     import AppButton from '@shared/ui/button/AppButton.vue'
+    import type { DashboardStats } from '@shared/types/api'
 
     definePageMeta({
         layout: 'admin',
     })
 
-    const { data: stats } = await useAsyncData('admin-dashboard-stats', async () => {
-        const { data } = await adminApi.dashboard.getStats()
+    const { data: stats } = await useAsyncData<DashboardStats>('admin-dashboard-stats', async () => {
+        const data = await adminApi.dashboard.getStats()
         return data
     })
 </script>

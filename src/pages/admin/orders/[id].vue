@@ -45,7 +45,7 @@
                         <div
                             v-if="
                                 order.files &&
-                                order.files.filter(f => f.type === 'CLIENT_MATERIAL').length > 0
+                                order.files.filter((f) => f.type === 'client_material').length > 0
                             "
                         >
                             <label
@@ -56,7 +56,7 @@
                             <div class="space-y-2">
                                 <div
                                     v-for="file in order.files.filter(
-                                        f => f.type === 'CLIENT_MATERIAL'
+                                        f => f.type === 'client_material'
                                     )"
                                     :key="file.id"
                                     class="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-700 rounded"
@@ -78,7 +78,7 @@
                         <div
                             v-if="
                                 order.files &&
-                                order.files.filter(f => f.type === 'ADMIN_FILE').length > 0
+                                order.files.filter((f) => f.type === 'admin_file').length > 0
                             "
                         >
                             <label
@@ -88,7 +88,7 @@
                             </label>
                             <div class="space-y-2">
                                 <div
-                                    v-for="file in order.files.filter(f => f.type === 'ADMIN_FILE')"
+                                    v-for="file in order.files.filter((f) => f.type === 'admin_file')"
                                     :key="file.id"
                                     class="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-700 rounded"
                                 >
@@ -129,13 +129,13 @@
                     <div
                         v-if="
                             order.files &&
-                            order.files.filter(f => f.type === 'PROGRESS_SCREENSHOT').length > 0
+                            order.files.filter((f) => f.type === 'progress_screenshot').length > 0
                         "
                         class="space-y-3"
                     >
                         <div
                             v-for="file in order.files
-                                .filter(f => f.type === 'PROGRESS_SCREENSHOT')
+                                .filter((f) => f.type === 'progress_screenshot')
                                 .sort(
                                     (a, b) =>
                                         new Date(b.createdAt).getTime() -
@@ -230,7 +230,7 @@
                                 Сумма
                             </label>
                             <AppInput
-                                v-model.number="formData.amount"
+                                v-model="formData.amount"
                                 type="number"
                                 placeholder="0"
                             />
@@ -340,6 +340,7 @@
     import AppButton from '@shared/ui/button/AppButton.vue'
     import AppInput from '@shared/ui/input/AppInput.vue'
     import AppModal from '@shared/ui/modal/AppModal.vue'
+    import type { OrderFile } from '@shared/types/api'
 
     definePageMeta({
         layout: 'admin',
@@ -352,20 +353,20 @@
     const toast = useToast()
 
     const { data: order, refresh } = await useAsyncData(`admin-order-${orderId}`, async () => {
-        const { data } = await adminApi.orders.getById(orderId)
+        const data = await adminApi.orders.getById(orderId)
         return data
     })
 
     const { data: statuses } = await useAsyncData('statuses', async () => {
-        const { data } = await adminApi.statuses.getAll()
+        const data = await adminApi.statuses.getAll()
         return data
     })
 
     const formData = reactive({
         description: order.value?.description || '',
-        amount: order.value?.amount || undefined,
+        amount: order.value?.amount || 0,
         paymentLink: order.value?.paymentLink || '',
-        statusId: order.value?.statusId || undefined,
+        statusId: order.value?.status?.id || undefined,
     })
 
     watch(
@@ -373,9 +374,9 @@
         newOrder => {
             if (newOrder) {
                 formData.description = newOrder.description || ''
-                formData.amount = newOrder.amount || undefined
+                formData.amount = newOrder.amount || 0
                 formData.paymentLink = newOrder.paymentLink || ''
-                formData.statusId = newOrder.statusId || undefined
+                formData.statusId = newOrder.status?.id || undefined
             }
         },
         { immediate: true }
@@ -418,7 +419,7 @@
         if (!selectedFile.value) return
 
         try {
-            await adminApi.orders.uploadFile(orderId, selectedFile.value, 'PROGRESS_SCREENSHOT')
+            await adminApi.orders.uploadFile(orderId, selectedFile.value, 'progress_screenshot')
             toast.showSuccess('Файл загружен')
             showUploadModal.value = false
             selectedFile.value = null
@@ -450,7 +451,7 @@
 
     const sendPaymentLink = async () => {
         if (!formData.paymentLink) {
-            toast.error('Сначала укажите ссылку на оплату')
+            toast.showError('Сначала укажите ссылку на оплату')
             return
         }
         // TODO: Реализовать отправку ссылки клиенту

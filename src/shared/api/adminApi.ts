@@ -1,97 +1,6 @@
 import api, { unwrapStrapiResponse, unwrapStrapiCollection } from './api'
 import { ApiEndpoints } from '../config/apiEndpoints'
-
-export interface Service {
-    id: number
-    name: string
-    price?: number
-    desc?: string
-}
-
-export interface Status {
-    id: number
-    name: string
-    color: string
-    order: number
-}
-
-export interface AdminUser {
-    id: number
-    username: string
-    email: string
-    name?: string
-    phone?: string
-    role?: {
-        id: number
-        type: string
-        name: string
-    }
-    confirmed: boolean
-    blocked: boolean
-    createdAt: string
-    updatedAt: string
-}
-
-export interface Order {
-    id: number
-    userId: number
-    serviceId?: number
-    statusId: number
-    assignedAdminId?: number
-    description?: string
-    amount?: number
-    paymentLink?: string
-    clientLink?: string
-    telegram?: string
-    whatsapp?: string
-    createdAt: string
-    updatedAt: string
-    user?: AdminUser
-    service?: Service
-    status?: Status
-    assignedAdmin?: AdminUser
-    files?: OrderFile[]
-    history?: OrderHistory[]
-}
-
-export interface OrderFile {
-    id: number
-    orderId: number
-    type: 'CLIENT_MATERIAL' | 'PROGRESS_SCREENSHOT' | 'ADMIN_FILE'
-    filename: string
-    path: string
-    size?: number
-    mimeType?: string
-    uploadedBy?: number
-    createdAt: string
-}
-
-export interface OrderHistory {
-    id: number
-    orderId: number
-    userId: number
-    action: string
-    description?: string
-    metadata?: string
-    createdAt: string
-    user?: AdminUser
-}
-
-export interface CreateOrderByAdminDto {
-    userId?: number // Если создается для существующего пользователя
-    clientName: string
-    clientEmail: string
-    telegram?: string
-    whatsapp?: string
-    description: string
-    clientLink?: string
-    amount?: number
-    paymentLink?: string
-    serviceId?: number
-    statusId: number
-    assignedAdminId?: number
-    files?: File[] // Файлы для загрузки
-}
+import type { Service, Status, AdminUser, Order, OrderFile, Comment, DashboardStats, CreateOrderByAdminDto, CreateAdminUserDto, UpdateAdminUserDto } from '../types/api'
 
 export interface UpdateOrderDto {
     description?: string
@@ -105,25 +14,6 @@ export interface UpdateOrderDto {
     assignedAdminId?: number
 }
 
-export interface DashboardStats {
-    totalOrders: number
-    totalUsers: number
-    recentOrders: number
-    activeOrders: number
-    ordersByStatus: Array<{
-        status: Status
-        count: number
-    }>
-}
-
-export interface Comment {
-    id: number
-    orderId?: number
-    text: string
-    author?: AdminUser
-    createdAt: string
-}
-
 export const adminApi = {
     services: {
         getAll: async () => {
@@ -132,13 +22,13 @@ export const adminApi = {
             )
             return unwrapStrapiCollection(response)
         },
-        create: async (data: { name: string; price?: number; desc?: string }) => {
+        create: async (data: { name: string; price?: number; description?: string }) => {
             const response = await api.post<{ data: Service }>(ApiEndpoints.ADMIN.SERVICES.ALL, {
                 data,
             })
             return unwrapStrapiResponse(response)
         },
-        update: async (id: number, data: { name?: string; price?: number; desc?: string }) => {
+        update: async (id: number, data: { name?: string; price?: number; description?: string }) => {
             const response = await api.put<{ data: Service }>(
                 ApiEndpoints.ADMIN.SERVICES.BY_ID(id),
                 { data }
@@ -156,13 +46,13 @@ export const adminApi = {
             )
             return unwrapStrapiCollection(response)
         },
-        create: async (data: { name: string; color: string; order: number }) => {
+        create: async (data: { name: string; color: string; description?: string }) => {
             const response = await api.post<{ data: Status }>(ApiEndpoints.ADMIN.STATUSES.ALL, {
                 data,
             })
             return unwrapStrapiResponse(response)
         },
-        update: async (id: number, data: { name?: string; color?: string; order?: number }) => {
+        update: async (id: number, data: { name?: string; color?: string; description?: string }) => {
             const response = await api.put<{ data: Status }>(
                 ApiEndpoints.ADMIN.STATUSES.BY_ID(id),
                 { data }
@@ -180,23 +70,14 @@ export const adminApi = {
             )
             return unwrapStrapiCollection(response)
         },
-        create: async (data: {
-            email: string
-            password: string
-            name: string
-            phone?: string
-            role?: 'USER' | 'ADMIN'
-        }) => {
+        create: async (data: CreateAdminUserDto) => {
             // Strapi создает пользователей через users-permissions plugin
             const response = await api.post<{ data: AdminUser }>(ApiEndpoints.ADMIN.USERS.ALL, {
                 data,
             })
             return unwrapStrapiResponse(response)
         },
-        update: async (
-            id: number,
-            data: { email?: string; name?: string; phone?: string; role?: 'USER' | 'ADMIN' }
-        ) => {
+        update: async (id: number, data: UpdateAdminUserDto) => {
             const response = await api.put<{ data: AdminUser }>(
                 ApiEndpoints.ADMIN.USERS.BY_ID(id),
                 { data }
@@ -240,7 +121,7 @@ export const adminApi = {
         uploadFile: async (
             orderId: number,
             file: File,
-            type: 'CLIENT_MATERIAL' | 'PROGRESS_SCREENSHOT' | 'ADMIN_FILE'
+            type: 'client_material' | 'progress_screenshot' | 'admin_file'
         ) => {
             const formData = new FormData()
             formData.append('files', file)
@@ -267,7 +148,7 @@ export const adminApi = {
         },
     },
     comments: {
-        create: async (data: { orderId: number; text: string }) => {
+        create: async (data: { orderId: number; content: string }) => {
             const response = await api.post<{ data: Comment }>(ApiEndpoints.ADMIN.COMMENTS.CREATE, {
                 data,
             })

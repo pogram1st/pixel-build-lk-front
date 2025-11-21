@@ -28,7 +28,7 @@
                     <template #cell-actions="{ row }">
                         <div class="flex space-x-2">
                             <button
-                                @click="editUser(row)"
+                                @click="editUser(row as AdminUser)"
                                 class="text-primary-600 hover:text-primary-800"
                             >
                                 Редактировать
@@ -133,7 +133,7 @@
     })
 
     const { data: users, refresh } = await useAsyncData('admin-users', async () => {
-        const { data } = await adminApi.users.getAll()
+        const data = await adminApi.users.getAll()
         return data
     })
 
@@ -154,14 +154,14 @@
         password: '',
         name: '',
         phone: '',
-        role: 'USER',
+        role: 'USER' as 'USER' | 'ADMIN',
     })
     const editForm = ref({
         id: 0,
         email: '',
         name: '',
         phone: '',
-        role: 'USER',
+        role: 'USER' as 'USER' | 'ADMIN',
     })
 
     const createUser = async () => {
@@ -177,7 +177,13 @@
     }
 
     const editUser = (user: AdminUser) => {
-        editForm.value = { ...user }
+        editForm.value = {
+            id: user.id,
+            email: user.email,
+            name: user.username, // Use username as name
+            phone: user.phone || '',
+            role: user.role?.type === 'admin' ? 'ADMIN' : 'USER'
+        }
         showEditModal.value = true
     }
 

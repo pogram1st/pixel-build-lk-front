@@ -20,7 +20,7 @@
                     <template #cell-actions="{ row }">
                         <div class="flex space-x-2">
                             <button
-                                @click="editService(row)"
+                                @click="editService(row as Service)"
                                 class="text-primary-600 hover:text-primary-800"
                             >
                                 Редактировать
@@ -50,7 +50,7 @@
                         Описание
                     </label>
                     <textarea
-                        v-model="serviceForm.desc"
+                        v-model="serviceForm.description"
                         class="w-full px-3 py-2 border border-gray-300 rounded-md"
                         rows="3"
                         placeholder="Описание услуги"
@@ -72,7 +72,7 @@
                         Описание
                     </label>
                     <textarea
-                        v-model="editForm.desc"
+                        v-model="editForm.description"
                         class="w-full px-3 py-2 border border-gray-300 rounded-md"
                         rows="3"
                         placeholder="Описание услуги"
@@ -101,7 +101,7 @@
     })
 
     const { data: services, refresh } = await useAsyncData('admin-services', async () => {
-        const { data } = await adminApi.services.getAll()
+        const data = await adminApi.services.getAll()
         return data
     })
 
@@ -109,7 +109,7 @@
         { key: 'id', label: 'ID' },
         { key: 'name', label: 'Название' },
         { key: 'price', label: 'Цена' },
-        { key: 'desc', label: 'Описание' },
+        { key: 'description', label: 'Описание' },
         { key: 'actions', label: 'Действия' },
     ]
 
@@ -119,13 +119,13 @@
     const serviceForm = ref({
         name: '',
         price: '',
-        desc: '',
+        description: '',
     })
     const editForm = ref({
         id: 0,
         name: '',
         price: '',
-        desc: '',
+        description: '',
     })
 
     const createService = async () => {
@@ -136,7 +136,7 @@
             })
             toast.showSuccess('Услуга успешно создана')
             showCreateModal.value = false
-            serviceForm.value = { name: '', price: '', desc: '' }
+            serviceForm.value = { name: '', price: '', description: '' }
             await refresh()
         } catch (error: unknown) {
             toast.showError(error, 'createService')
@@ -144,7 +144,12 @@
     }
 
     const editService = (service: Service) => {
-        editForm.value = { ...service, price: service.price?.toString() || '' }
+        editForm.value = { 
+            id: service.id,
+            name: service.name,
+            price: service.price?.toString() || '',
+            description: service.description || ''
+        }
         showEditModal.value = true
     }
 

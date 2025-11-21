@@ -78,7 +78,7 @@
 
                 <div class="grid grid-cols-2 gap-4">
                     <AppInput
-                        v-model.number="formData.amount"
+                        v-model="formData.amount"
                         type="number"
                         label="Сумма заказа (₽)"
                         placeholder="0"
@@ -201,12 +201,12 @@
     const toast = useToast()
 
     const { data: services } = await useAsyncData('admin-services', async () => {
-        const { data } = await adminApi.services.getAll()
+        const data = await adminApi.services.getAll()
         return data
     })
 
     const { data: statuses } = await useAsyncData('admin-statuses', async () => {
-        const { data } = await adminApi.statuses.getAll()
+        const data = await adminApi.statuses.getAll()
         return data
     })
 
@@ -217,7 +217,7 @@
         whatsapp: '',
         description: '',
         clientLink: '',
-        amount: undefined as number | undefined,
+        amount: 0,
         paymentLink: '',
         serviceId: undefined as number | undefined,
         statusId: undefined as number | undefined,
@@ -256,14 +256,23 @@
         }
 
         if (Object.keys(errors).length > 0) {
-            toast.error('Пожалуйста, заполните все обязательные поля')
+            toast.showError('Пожалуйста, заполните все обязательные поля')
             return
         }
 
         loading.value = true
         try {
             await adminApi.orders.create({
-                ...formData,
+                clientName: formData.clientName,
+                clientEmail: formData.clientEmail,
+                telegram: formData.telegram,
+                whatsapp: formData.whatsapp,
+                description: formData.description,
+                clientLink: formData.clientLink,
+                amount: formData.amount,
+                paymentLink: formData.paymentLink,
+                serviceId: formData.serviceId,
+                statusId: formData.statusId!,
                 files: selectedFiles.value,
             })
             toast.showSuccess('Заказ успешно создан')

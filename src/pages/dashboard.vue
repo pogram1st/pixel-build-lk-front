@@ -81,21 +81,22 @@
     })
 
     const { data: orders } = await useAsyncData('orders', async () => {
-        const { data } = await orderApi.getMyOrders()
+        const data = await orderApi.getMyOrders()
         return data
     })
 
     const activeOrders = computed(() => {
-        return orders.value?.filter((o: Order) => o.status?.name !== 'Завершен').length || 0
+        return orders.value?.filter((o) => o.status?.name !== 'Завершен').length || 0
     })
 
     const totalOrders = computed(() => orders.value?.length || 0)
 
     const lastUpdate = computed(() => {
         if (!orders.value || orders.value.length === 0) return null
-        const latest = orders.value.reduce((latest: Order | null, order: Order) => {
+        const latest = orders.value.reduce((latest: Order | null, order) => {
+            if (!latest) return order
             return new Date(order.updatedAt) > new Date(latest.updatedAt) ? order : latest
-        })
-        return new Date(latest.updatedAt).toLocaleString('ru-RU')
+        }, null as Order | null)
+        return latest ? new Date(latest.updatedAt).toLocaleString('ru-RU') : null
     })
 </script>

@@ -135,7 +135,7 @@
 
         const isValid = await validateForm()
         if (!isValid) {
-            toast.error('Пожалуйста, исправьте ошибки в форме')
+            toast.showError('Пожалуйста, исправьте ошибки в форме')
             return false
         }
 

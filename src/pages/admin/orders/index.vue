@@ -57,7 +57,7 @@
     })
 
     const { data: orders } = await useAsyncData('admin-orders', async () => {
-        const { data } = await adminApi.orders.getAll()
+        const data = await adminApi.orders.getAll()
         return data
     })
 
