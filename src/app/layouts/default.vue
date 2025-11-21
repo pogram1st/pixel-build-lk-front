@@ -147,6 +147,11 @@
     const handleLogout = async () => {
         authStore.logout()
         toast.showSuccess('Вы вышли из системы')
-        await router.push(RoutePaths[RouteNames.AUTH_LOGIN] as string)
+        // Редиректим на централизованный сервис авторизации
+        const config = useRuntimeConfig()
+        const currentUrl = window.location.href
+        const authFrontendUrl = config.public.authFrontendUrl
+        const redirectUrl = `${authFrontendUrl}/login?redirect=${encodeURIComponent(currentUrl)}`
+        window.location.href = redirectUrl
     }
 </script>

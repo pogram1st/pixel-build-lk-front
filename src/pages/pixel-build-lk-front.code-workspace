@@ -10,7 +10,19 @@
 			"path": "../../../pixel-build-telegram-bot-constructor"
 		},
 		{
-			"path": "../../../pixel-build-auth"
+			"path": "../../../pixel-build-telegram-bot-constructor-backend"
+		},
+		{
+			"path": "../../../pixel-build-auth-backend"
+		},
+		{
+			"path": "../../../pixel-build-auth-front"
+		},
+		{
+			"path": "../../../pixel-perfect-construct-web"
+		},
+		{
+			"path": "../../../pixel-build-strapi"
 		}
 	],
 	"settings": {}

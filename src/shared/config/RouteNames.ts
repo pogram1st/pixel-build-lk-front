@@ -1,6 +1,5 @@
 export const RouteNames = {
-    AUTH_LOGIN: 'auth-login',
-    AUTH_REGISTER: 'auth-register',
+    // Удалены AUTH_LOGIN и AUTH_REGISTER - теперь используется централизованный auth-frontend
     DASHBOARD: 'dashboard',
     ORDERS: 'orders',
     ORDER_DETAIL: 'order-detail',

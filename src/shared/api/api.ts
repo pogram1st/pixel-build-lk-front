@@ -83,15 +83,19 @@ async function handle401Error(error: AxiosError, api: AxiosInstance): Promise<Ax
     if (error.response?.status === 401 && originalRequest && !originalRequest._retry) {
         originalRequest._retry = true
 
-        // Strapi не имеет встроенного refresh токена в стандартном виде
-        // Если нужно, можно реализовать отдельный endpoint
-        // Пока просто перенаправляем на страницу входа
+        // Очищаем токены
         try {
             const tokenCookie = useCookie(CookieNames.ACCESS_TOKEN)
             tokenCookie.value = null
 
             if (process.client) {
-                await navigateTo(RoutePaths[RouteNames.AUTH_LOGIN] as string)
+                // Редиректим на централизованный сервис авторизации
+                const currentUrl = window.location.href
+                const config = useRuntimeConfig()
+                const authFrontendUrl = config.public.authFrontendUrl
+                const redirectUrl = `${authFrontendUrl}/login?redirect=${encodeURIComponent(currentUrl)}`
+                
+                window.location.href = redirectUrl
             }
         } catch {
             // Ignore navigation errors

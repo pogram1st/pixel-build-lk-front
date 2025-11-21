@@ -14,7 +14,8 @@ export default defineNuxtConfig({
   css: ['~/app/styles/main.css'], // Путь относительно srcDir (src/app/styles/main.css)
   runtimeConfig: {
     public: {
-      apiBase: process.env.API_BASE_URL || 'http://localhost:1337'
+      apiBase: process.env.API_BASE_URL || 'http://localhost:1337',
+      authFrontendUrl: process.env.AUTH_FRONTEND_URL || 'http://localhost:3005'
     },
   },
   ssr: true,

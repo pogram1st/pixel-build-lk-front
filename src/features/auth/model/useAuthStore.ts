@@ -5,14 +5,15 @@ import * as userApi from '@shared/api/userApi'
 import { CookieNames } from '@shared/config/cookies'
 
 interface User {
-    id: number
+    id: string // Изменено на string для совместимости с auth-service
     email: string
     phone?: string
-    username: string // username содержит имя пользователя
+    name: string // Изменено с username на name
     role?: {
         type: string
         name: string
     }
+    avatar?: string
 }
 
 export const useAuthStore = defineStore('auth', () => {
@@ -47,11 +48,14 @@ export const useAuthStore = defineStore('auth', () => {
     const setAuth = (data: AuthResponse) => {
         // Преобразуем Strapi user формат в наш внутренний формат
         user.value = {
-            id: data.user.id,
+            id: String(data.user.id),
             email: data.user.email,
             phone: data.user.phone,
-            username: data.user.username, // username содержит имя
-            role: data.user.role,
+            name: data.user.name,
+            role: {
+                type: data.user.role,
+                name: data.user.role
+            },
         }
         // Используем accessToken (преобразованный из jwt)
         accessToken.value = data.accessToken
@@ -67,11 +71,14 @@ export const useAuthStore = defineStore('auth', () => {
 
     const setUser = (userData: UserResponse) => {
         user.value = {
-            id: userData.id,
+            id: String(userData.id),
             email: userData.email,
             phone: userData.phone,
-            username: userData.username,
-            role: userData.role,
+            name: userData.name,
+            role: {
+                type: userData.role,
+                name: userData.role
+            },
         }
     }
 

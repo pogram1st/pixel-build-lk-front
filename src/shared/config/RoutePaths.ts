@@ -4,8 +4,7 @@ export const RoutePaths: Record<
     (typeof RouteNames)[keyof typeof RouteNames],
     string | ((id: number | string) => string)
 > = {
-    [RouteNames.AUTH_LOGIN]: '/auth/login',
-    [RouteNames.AUTH_REGISTER]: '/auth/register',
+    // Удалены AUTH_LOGIN и AUTH_REGISTER - теперь используется централизованный auth-frontend
     [RouteNames.DASHBOARD]: '/dashboard',
     [RouteNames.ORDERS]: '/orders',
     [RouteNames.ORDER_DETAIL]: (id: number | string) => `/orders/${id}`,
