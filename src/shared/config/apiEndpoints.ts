@@ -13,7 +13,7 @@ export const ApiEndpoints = {
         UPDATE: (id: number | string) => `/users/${id}`,
     },
     ORDERS: {
-        MY: '/orders/my-orders',
+        MY: '/orders/my',
         BY_ID: (id: number | string) => `/orders/${id}`,
         CREATE: '/orders',
     },
@@ -53,10 +53,10 @@ export const ApiEndpoints = {
                 `/admin/orders/${orderId}/files/${fileId}`,
         },
         DASHBOARD: {
-            STATS: '/admin/dashboard/stats',
+            STATS: '/admin/dashboard',
         },
         COMMENTS: {
-            CREATE: '/comments',
+            CREATE: (orderId: number | string) => `/orders/${orderId}/comments`,
         },
     },
 } as const

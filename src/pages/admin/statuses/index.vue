@@ -144,14 +144,15 @@
             await adminApi.statuses.create({
                 name: statusForm.value.name,
                 color: statusForm.value.color,
-                description: '',
+                order: statusForm.value.order,
             })
             toast.showSuccess('Статус успешно создан')
             showCreateModal.value = false
             statusForm.value = { name: '', color: '#3b82f6', order: 0 }
             await refresh()
         } catch (error: unknown) {
-            toast.showError(error, 'createStatus')
+            const errorMessage = error instanceof Error ? error.message : String(error)
+            toast.showError('Ошибка создания статуса', errorMessage)
         }
     }
 
@@ -160,7 +161,7 @@
             id: status.id,
             name: status.name,
             color: status.color || '#3b82f6',
-            order: 0 // TODO: Add order field to Status interface
+            order: status.order
         }
         showEditModal.value = true
     }
@@ -170,13 +171,14 @@
             await adminApi.statuses.update(editForm.value.id, {
                 name: editForm.value.name,
                 color: editForm.value.color,
-                description: '',
+                order: editForm.value.order,
             })
             toast.showSuccess('Статус успешно обновлен')
             showEditModal.value = false
             await refresh()
         } catch (error: unknown) {
-            toast.showError(error, 'updateStatus')
+            const errorMessage = error instanceof Error ? error.message : String(error)
+            toast.showError('Ошибка обновления статуса', errorMessage)
         }
     }
 
@@ -187,7 +189,8 @@
             toast.showSuccess('Статус успешно удален')
             await refresh()
         } catch (error: unknown) {
-            toast.showError(error, 'deleteStatus')
+            const errorMessage = error instanceof Error ? error.message : String(error)
+            toast.showError('Ошибка удаления статуса', errorMessage)
         }
     }
 </script>

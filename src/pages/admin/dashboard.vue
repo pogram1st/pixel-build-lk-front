@@ -74,7 +74,7 @@
                                         Заказ #{{ order.id }}
                                     </div>
                                     <div class="text-sm text-gray-500 dark:text-gray-400">
-                                        {{ order.user?.username }} ({{ order.user?.email }})
+                                        {{ order.user?.name }} ({{ order.user?.email }})
                                     </div>
                                 </div>
                                 <div

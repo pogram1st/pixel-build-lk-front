@@ -1,33 +1,16 @@
-import { useToast as useVueToastification } from 'vue-toastification'
-import { getErrorMessage, type ErrorContext } from './errorHandler'
+import { useAlertStore } from "../stores/useAlertStore"
 
-export function useToast() {
-    const toast = useVueToastification()
+export const useToast = () => {
+  const alertStore = useAlertStore()
 
-    const showSuccess = (message: string) => {
-        toast.success(message)
-    }
-
-    const showError = (
-        error: unknown,
-        context: ErrorContext = 'general'
-    ) => {
-        const message = getErrorMessage(error, context)
-        toast.error(message)
-    }
-
-    const showWarning = (message: string) => {
-        toast.warning(message)
-    }
-
-    const showInfo = (message: string) => {
-        toast.info(message)
-    }
-
-    return {
-        showSuccess,
-        showError,
-        showWarning,
-        showInfo,
-    }
+  return {
+    success: (message: string, description?: string) => alertStore.success(message, description),
+    error: (message: string, description?: string) => alertStore.error(message, description),
+    warning: (message: string, description?: string) => alertStore.warning(message, description),
+    info: (message: string, description?: string) => alertStore.info(message, description),
+    showSuccess: (message: string, description?: string) => alertStore.success(message, description),
+    showError: (message: string, description?: string) => alertStore.error(message, description),
+    showWarning: (message: string, description?: string) => alertStore.warning(message, description),
+    showInfo: (message: string, description?: string) => alertStore.info(message, description),
+  }
 }

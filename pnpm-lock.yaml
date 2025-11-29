@@ -14,6 +14,9 @@ importers:
       '@pinia/nuxt':
         specifier: ^0.5.1
         version: 0.5.5(magicast@0.5.1)(typescript@5.9.3)(vue@3.5.24(typescript@5.9.3))
+      '@pixel-build/uikit':
+        specifier: file:../pixel-build-uikit
+        version: file:../pixel-build-uikit(vue@3.5.24(typescript@5.9.3))
       '@vee-validate/yup':
         specifier: ^4.15.1
         version: 4.15.1(vue@3.5.24(typescript@5.9.3))(yup@1.7.1)
@@ -1174,6 +1177,11 @@ packages:
 
   '@pinia/nuxt@0.5.5':
     resolution: {integrity: sha512-wjxS7YqIesh4OLK+qE3ZjhdOJ5pYZQ+VlEmZNtTwzQn1Kavei/khovx7mzXVXNA/mvSPXVhb9xBzhyS3XMURtw==}
+
+  '@pixel-build/uikit@file:../pixel-build-uikit':
+    resolution: {directory: ../pixel-build-uikit, type: directory}
+    peerDependencies:
+      vue: ^3.4.0
 
   '@pkgjs/parseargs@0.11.0':
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
@@ -5959,6 +5967,10 @@ snapshots:
       - magicast
       - typescript
       - vue
+
+  '@pixel-build/uikit@file:../pixel-build-uikit(vue@3.5.24(typescript@5.9.3))':
+    dependencies:
+      vue: 3.5.24(typescript@5.9.3)
 
   '@pkgjs/parseargs@0.11.0':
     optional: true

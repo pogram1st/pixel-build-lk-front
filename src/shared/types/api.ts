@@ -1,213 +1,224 @@
-// Базовые типы API
-export interface BaseEntity {
-    id: number
-    documentId: string
-    createdAt: string
-    updatedAt: string
-    publishedAt: string
-}
+// Типы API, соответствующие монолитному бэкенду (Prisma)
+
+export type UserRole = 'USER' | 'ADMIN' | 'SUPER_ADMIN'
 
 // Пользователи
-export interface User extends BaseEntity {
-    username: string
-    email: string
-    phone?: string
-    name?: string
-    confirmed: boolean
-    blocked: boolean
-    role?: Role
-}
-
-export interface Role extends BaseEntity {
-    name: string
-    description?: string
-    type: string
+export interface User {
+  id: number
+  email: string
+  name: string
+  phone: string | null
+  avatar: string | null
+  role: UserRole
+  isActive: boolean
+  createdAt: string
+  updatedAt: string
 }
 
 // Заказы
-export interface Order extends BaseEntity {
-    description: string
-    amount?: number
-    paymentLink?: string
-    clientLink?: string
-    telegram?: string
-    whatsapp?: string
-    user?: User
-    service?: Service
-    status?: Status
-    assignedAdmin?: User
-    comments?: Comment[]
-    files?: OrderFile[]
-    history?: OrderHistory[]
-}
-
-export interface OrderHistory extends BaseEntity {
-    action: string
-    description?: string
-    metadata?: Record<string, unknown>
-    order?: Order
-    user?: User
-}
-
-export interface Service extends BaseEntity {
+export interface Order {
+  id: number
+  userId: number
+  serviceId: number | null
+  statusId: number
+  assignedAdminId: number | null
+  description: string | null
+  amount: number | null
+  paymentLink: string | null
+  clientLink: string | null
+  telegram: string | null
+  whatsapp: string | null
+  createdAt: string
+  updatedAt: string
+  user?: {
+    id: number
+    email: string
     name: string
-    description?: string
-    price?: number
-}
-
-export interface Status extends BaseEntity {
+    phone: string | null
+  }
+  service?: Service
+  status?: Status
+  assignedAdmin?: {
+    id: number
     name: string
-    color?: string
-    description?: string
-    order?: number
+    email: string
+  }
+  comments?: Comment[]
+  files?: OrderFile[]
+  history?: OrderHistory[]
 }
 
-export interface Comment extends BaseEntity {
-    content: string
-    order?: Order
-    author?: User
+export interface OrderHistory {
+  id: number
+  orderId: number
+  userId: number
+  action: string
+  description: string | null
+  metadata: string | null
+  createdAt: string
+  user?: {
+    id: number
+    name: string
+    email: string
+  }
 }
 
-export interface OrderFile extends BaseEntity {
-    filename: string
-    path: string
-    size: number
-    mimeType: string
-    type: 'client_material' | 'admin_file' | 'progress_screenshot'
-    order?: Order
-    uploadedBy?: User
+export interface Service {
+  id: number
+  name: string
+  price: number | null
+  desc: string | null
+}
+
+export interface Status {
+  id: number
+  name: string
+  color: string
+  order: number
+}
+
+export interface Comment {
+  id: number
+  orderId: number
+  authorId: number
+  text: string
+  createdAt: string
+  updatedAt: string
+  author?: User
+}
+
+export interface OrderFile {
+  id: number
+  orderId: number
+  type: 'CLIENT_MATERIAL' | 'PROGRESS_SCREENSHOT' | 'ADMIN_FILE'
+  filename: string
+  path: string
+  size: number
+  mimeType: string
+  uploadedBy: number
+  createdAt: string
+  updatedAt: string
+  url?: string | null // Добавляется на фронте для S3 URL
 }
 
 // API ответы
-export interface ApiResponse<T> {
-    data: T
-    meta?: ApiMeta
-}
-
-export interface ApiMeta {
-    pagination?: {
-        page: number
-        pageSize: number
-        pageCount: number
-        total: number
-    }
-}
-
 export interface ApiError {
-    status: number
-    name: string
-    message: string
-    details: Record<string, unknown>
+  statusCode: number
+  message: string
+  error?: string
 }
 
 // Типы для форм
 export interface LoginData {
-    email: string
-    password: string
+  email: string
+  password: string
 }
 
 export interface RegisterData {
-    name: string
-    email: string
-    password: string
-    phone?: string
+  name: string
+  email: string
+  password: string
+  phone?: string
 }
 
 export interface CreateOrderByAdminDto {
-    userId?: number // Если создается для существующего пользователя
-    clientName: string
-    clientEmail: string
-    telegram?: string
-    whatsapp?: string
-    description: string
-    clientLink?: string
-    amount?: number
-    paymentLink?: string
-    serviceId?: number
-    statusId: number
-    assignedAdminId?: number
-    files?: File[] // Файлы для загрузки
+  userId?: number
+  clientName: string
+  clientEmail: string
+  telegram?: string
+  whatsapp?: string
+  description: string
+  clientLink?: string
+  amount?: number
+  paymentLink?: string
+  serviceId?: number
+  statusId?: number
+  assignedAdminId?: number
 }
 
 export interface CreateAdminUserDto {
-    email: string
-    password: string
-    name: string
-    phone?: string
-    role?: 'USER' | 'ADMIN'
+  email: string
+  password: string
+  name: string
+  phone?: string
+  role?: UserRole
 }
 
 export interface UpdateAdminUserDto {
-    email?: string
-    name?: string
-    phone?: string
-    role?: 'USER' | 'ADMIN'
+  email?: string
+  name?: string
+  phone?: string
+  role?: UserRole
 }
 
 export interface ServiceFormData {
-    id?: number
-    name: string
-    price: string
-    description?: string
+  id?: number
+  name: string
+  price: string
+  description?: string
 }
 
 export interface StatusFormData {
-    id?: number
-    name: string
-    color: string
-    description?: string
-    order?: number
+  id?: number
+  name: string
+  color: string
+  description?: string
+  order?: number
 }
 
 export interface UserFormData {
-    id?: number
-    email: string
-    name: string
-    phone: string
-    role: string
+  id?: number
+  email: string
+  name: string
+  phone: string
+  role: string
 }
 
 export interface AuthResponse {
-    jwt: string
-    user: User
-    accessToken: string
+  accessToken: string
+  user: User
 }
 
 // Типы для админки
-export interface AdminUser extends User {
-    role: Role & { type: 'admin' }
+export interface AdminUser extends Omit<User, 'password'> {
+  role: UserRole
 }
 
 export interface DashboardStats {
-    totalOrders: number
-    activeOrders: number
-    completedOrders: number
-    totalRevenue: number
-    ordersToday: number
-    ordersWeek: number
-    ordersInWork: number
-    ordersAwaitingPayment: number
-    ordersCompleted: number
-    recentOrders: Order[]
-    ordersByStatus: Array<{
-        status: string
-        count: number
-    }>
+  ordersToday: number
+  ordersWeek: number
+  ordersInWork: number
+  ordersCompleted: number
+  ordersAwaitingPayment: number
+  recentOrders: Array<{
+    id: number
+    userId: number
+    statusId: number
+    description: string | null
+    createdAt: string
+    user: {
+      id: number
+      name: string
+      email: string
+    }
+    service?: Service
+    status: Status
+  }>
 }
 
 // Типы для валидации
 export interface ValidationError {
-    path: string[]
-    message: string
+  path: string[]
+  message: string
 }
 
 export interface FormErrors {
-    [key: string]: string
+  [key: string]: string
 }
 
 // Типы для таблиц
 export interface TableColumn {
-    key: string
-    label: string
-    sortable?: boolean
+  key: string
+  label: string
+  sortable?: boolean
 }

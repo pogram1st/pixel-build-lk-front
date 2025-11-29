@@ -13,10 +13,22 @@ export default defineNuxtConfig({
   serverDir: 'server',
   css: ['~/app/styles/main.css'], // Путь относительно srcDir (src/app/styles/main.css)
   runtimeConfig: {
+    // Private keys (only available on server-side)
+    backendUrl: process.env.BACKEND_URL || 'http://localhost:4000',
+    // Public keys (exposed to client-side)
     public: {
-      apiBase: process.env.API_BASE_URL || 'http://localhost:1337',
+      apiBase: process.env.API_BASE_URL || '/api',
       authFrontendUrl: process.env.AUTH_FRONTEND_URL || 'http://localhost:3005'
     },
+  },
+  nitro: {
+    devProxy: {
+      [process.env.API_BASE_URL || '/api']: {
+        target: process.env.BACKEND_URL || 'http://localhost:4000',
+        changeOrigin: true,
+        prependPath: true,
+      }
+    }
   },
   ssr: true,
   // Отключаем анимации переходов между страницами для SSR

@@ -88,7 +88,7 @@
                         <div v-if="authStore.user" class="flex items-center space-x-3">
                             <div class="text-right hidden sm:block">
                                 <div class="text-sm font-medium text-gray-900 dark:text-white">
-                                    {{ authStore.user.username }}
+                                    {{ authStore.user.name }}
                                 </div>
                                 <div class="text-xs text-gray-500 dark:text-gray-400">
                                     {{ authStore.user.email }}
@@ -100,7 +100,7 @@
                                 <span
                                     class="text-primary-600 dark:text-primary-400 font-semibold text-sm"
                                 >
-                                    {{ authStore.user.username.charAt(0).toUpperCase() }}
+                                    {{ authStore.user.name.charAt(0).toUpperCase() }}
                                 </span>
                             </div>
                         </div>

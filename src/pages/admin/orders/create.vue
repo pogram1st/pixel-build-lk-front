@@ -273,12 +273,12 @@
                 paymentLink: formData.paymentLink,
                 serviceId: formData.serviceId,
                 statusId: formData.statusId!,
-                files: selectedFiles.value,
             })
             toast.showSuccess('Заказ успешно создан')
             await router.push(RoutePaths[RouteNames.ADMIN_ORDERS] as string)
         } catch (error: unknown) {
-            toast.showError(error, 'createOrder')
+            const errorMessage = error instanceof Error ? error.message : String(error)
+            toast.showError('Ошибка создания заказа', errorMessage)
         } finally {
             loading.value = false
         }

@@ -4,18 +4,6 @@
 			"path": "../.."
 		},
 		{
-			"path": "../../../pixel-build-lk-backend"
-		},
-		{
-			"path": "../../../pixel-build-telegram-bot-constructor"
-		},
-		{
-			"path": "../../../pixel-build-telegram-bot-constructor-backend"
-		},
-		{
-			"path": "../../../pixel-build-auth-backend"
-		},
-		{
 			"path": "../../../pixel-build-auth-front"
 		},
 		{
@@ -23,6 +11,12 @@
 		},
 		{
 			"path": "../../../pixel-build-strapi"
+		},
+		{
+			"path": "../../../pixel-build-telegram-bot-constructor-front"
+		},
+		{
+			"path": "../../../pixel-build-backend"
 		}
 	],
 	"settings": {}

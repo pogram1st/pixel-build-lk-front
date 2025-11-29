@@ -9,7 +9,7 @@ export interface FormField {
     validator?: (value: string) => string | null
 }
 
-export interface FormConfig<T extends Record<string, any>> {
+export interface FormConfig<T extends Record<string, FormField>> {
     fields: T
     onSubmit: (data: Record<keyof T, string>) => Promise<void>
     errorContext?: ErrorContext
@@ -21,7 +21,7 @@ export function useForm<T extends Record<string, FormField>>(config: FormConfig<
     const fields = reactive(config.fields)
 
     const validateField = (fieldName: keyof T) => {
-        const field = (fields as Record<keyof T, FormField>)[fieldName]
+        const field = (fields as unknown as Record<keyof T, FormField>)[fieldName]
 
         if (field.required && !field.value.trim()) {
             field.error = 'Это поле обязательно для заполнения'
@@ -49,25 +49,31 @@ export function useForm<T extends Record<string, FormField>>(config: FormConfig<
     }
 
     const clearErrors = () => {
-        for (const fieldName in fields) {
-            fields[fieldName].error = ''
+        const fieldsRecord = fields as unknown as Record<keyof T, FormField>
+        for (const fieldName in fieldsRecord) {
+            fieldsRecord[fieldName].error = ''
         }
     }
 
     const reset = () => {
-        for (const fieldName in fields) {
-            fields[fieldName].value = ''
-            fields[fieldName].error = ''
+        const fieldsRecord = fields as unknown as Record<keyof T, FormField>
+        for (const fieldName in fieldsRecord) {
+            fieldsRecord[fieldName].value = ''
+            fieldsRecord[fieldName].error = ''
         }
     }
 
-    const getFormData = () => {
-        const data = {} as Record<keyof T, string>
-        for (const fieldName in fields) {
+    const getFormData = (): Record<keyof T, string> => {
+        const data: Partial<Record<keyof T, string>> = {}
+        const fieldsRecord = fields as unknown as Record<keyof T, FormField>
+        for (const fieldName in fieldsRecord) {
             const key = fieldName as keyof T
-            data[key] = (fields as Record<keyof T, FormField>)[key].value
+            const field = fieldsRecord[key]
+            if (field) {
+                data[key] = field.value
+            }
         }
-        return data
+        return data as Record<keyof T, string>
     }
 
     const handleSubmit = async () => {
@@ -79,8 +85,9 @@ export function useForm<T extends Record<string, FormField>>(config: FormConfig<
         try {
             await config.onSubmit(getFormData())
             showSuccess('Операция выполнена успешно')
-        } catch (error) {
-            showError(error, config.errorContext)
+        } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : String(error)
+            showError(errorMessage, config.errorContext)
         } finally {
             isLoading.value = false
         }

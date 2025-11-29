@@ -53,7 +53,7 @@
                             <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">
                                 {{ new Date(comment.createdAt).toLocaleString('ru-RU') }}
                             </p>
-                            <p class="text-gray-900 dark:text-gray-100">{{ comment.content }}</p>
+                            <p class="text-gray-900 dark:text-gray-100">{{ comment.text }}</p>
                         </div>
                         <div
                             v-if="!order.comments || order.comments.length === 0"

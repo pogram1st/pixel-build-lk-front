@@ -1,3 +1,5 @@
+import { ErrorCode } from '../types/enums'
+
 export type ErrorContext =
     | 'login'
     | 'register'
@@ -30,40 +32,35 @@ export function getErrorMessage(error: unknown, context: ErrorContext = 'general
         return error
     }
 
-interface ErrorWithResponse {
-    response?: {
-        status?: number
-        data?: {
-            error?: {
+    interface ErrorWithResponse {
+        response?: {
+            status?: number
+            data?: {
+                error?: {
+                    message?: string
+                    details?: Record<string, unknown>
+                }
                 message?: string
-                details?: Record<string, unknown>
             }
         }
-    }
-    error?: {
+        error?: {
+            message?: string
+            details?: Record<string, unknown>
+        }
+        code?: string
         message?: string
-        details?: Record<string, unknown>
     }
-    code?: string
-    message?: string
-}
-
-    // Обработка ошибок от Strapi
-    const errorObj = error as ErrorWithResponse
-    const strapiError = errorObj?.response?.data?.error || errorObj?.error
-    const strapiMessage = strapiError?.message
-    const status = errorObj?.response?.status
 
     // Специфичные сообщения для разных контекстов
     const contextMessages: Record<ErrorContext, Record<number, string>> = {
-        login: {
-            400: 'Неверный email или пароль',
-            401: 'Неверный email или пароль',
-            403: 'Доступ запрещен',
-            404: 'Пользователь не найден',
-            422: 'Неверный формат email или пароля',
-            500: 'Ошибка входа. Попробуйте позже',
-        },
+            login: {
+                400: 'Неверный email или пароль',
+                401: 'Неверный email или пароль',
+                403: 'Доступ запрещен',
+                404: 'Пользователь не найден',
+                422: 'Неверный формат email или пароля',
+                500: 'Ошибка входа. Попробуйте позже',
+            },
         register: {
             400: 'Ошибка регистрации. Проверьте данные',
             409: 'Пользователь с таким email уже существует',
@@ -194,80 +191,66 @@ interface ErrorWithResponse {
         },
     }
 
+    // Обработка ошибок от бэка
+    if (!error || typeof error !== 'object') {
+        return contextMessages.general[500]
+    }
+    
+    const errorObj: ErrorWithResponse = error
+    const nestJsMessage = errorObj?.response?.data?.message || errorObj?.message
+    const status = errorObj?.response?.status
+
     // Если есть статус и контекстное сообщение
     if (status && contextMessages[context]?.[status]) {
         return contextMessages[context][status]
     }
 
-    // Обработка специфичных ошибок Strapi
-    if (strapiMessage) {
+    // Обработка специфичных ошибок
+    if (nestJsMessage && typeof nestJsMessage === 'string') {
         // Ошибки валидации полей
-        if (strapiMessage.includes('name') && strapiMessage.includes('required')) {
+        if (nestJsMessage.includes('name') && nestJsMessage.includes('required')) {
             return 'Поле "Имя" обязательно для заполнения'
         }
-        if (strapiMessage.includes('email') && strapiMessage.includes('required')) {
+        if (nestJsMessage.includes('email') && nestJsMessage.includes('required')) {
             return 'Поле "Email" обязательно для заполнения'
         }
-        if (strapiMessage.includes('password') && strapiMessage.includes('required')) {
+        if (nestJsMessage.includes('password') && nestJsMessage.includes('required')) {
             return 'Поле "Пароль" обязательно для заполнения'
         }
-        if (strapiMessage.includes('phone') && strapiMessage.includes('required')) {
+        if (nestJsMessage.includes('phone') && nestJsMessage.includes('required')) {
             return 'Поле "Телефон" обязательно для заполнения'
         }
 
         // Ошибки формата
-        if (strapiMessage.includes('email') && strapiMessage.includes('format')) {
+        if (nestJsMessage.includes('email') && nestJsMessage.includes('format')) {
             return 'Неверный формат email'
         }
-        if (strapiMessage.includes('phone') && strapiMessage.includes('format')) {
+        if (nestJsMessage.includes('phone') && nestJsMessage.includes('format')) {
             return 'Неверный формат телефона'
         }
 
         // Ошибки уникальности
-        if (strapiMessage.includes('email') && strapiMessage.includes('unique')) {
+        if (nestJsMessage.includes('email') && nestJsMessage.includes('unique')) {
             return 'Пользователь с таким email уже существует'
         }
-        if (strapiMessage.includes('username') && strapiMessage.includes('unique')) {
+        if (nestJsMessage.includes('username') && nestJsMessage.includes('unique')) {
             return 'Пользователь с таким именем уже существует'
         }
 
         // Ошибки авторизации
-        if (strapiMessage.includes('Invalid identifier or password')) {
+        if (nestJsMessage.includes('Invalid identifier or password')) {
             return 'Неверный email или пароль'
         }
-        if (strapiMessage.includes('Your account email is not confirmed')) {
+        if (nestJsMessage.includes('Your account email is not confirmed')) {
             return 'Подтвердите email для входа в систему'
         }
-        if (strapiMessage.includes('Your account has been blocked')) {
+        if (nestJsMessage.includes('Your account has been blocked')) {
             return 'Ваш аккаунт заблокирован'
         }
 
-        // Возвращаем оригинальное сообщение от Strapi, если оно понятное
-        if (strapiMessage.length < 100 && !strapiMessage.includes('Error:')) {
-            return strapiMessage
-        }
-    }
-
-    // Обработка ошибок валидации Strapi (массив ошибок)
-    if (strapiError?.details?.errors && Array.isArray(strapiError.details.errors)) {
-        const validationErrors = strapiError.details.errors
-        if (validationErrors.length > 0) {
-            const firstError = validationErrors[0]
-            const field = firstError.path?.[0] || 'поле'
-            const message = firstError.message || 'неверное значение'
-
-            const fieldNames: Record<string, string> = {
-                name: 'Имя',
-                email: 'Email',
-                password: 'Пароль',
-                phone: 'Телефон',
-                title: 'Название',
-                description: 'Описание',
-                amount: 'Сумма',
-            }
-
-            const fieldName = fieldNames[field] || field
-            return `${fieldName}: ${message}`
+        // Возвращаем оригинальное сообщение, если оно понятное
+        if (nestJsMessage.length < 100 && !nestJsMessage.includes('Error:')) {
+            return nestJsMessage
         }
     }
 
@@ -280,13 +263,24 @@ interface ErrorWithResponse {
     }
 
     // Ошибки сети
-    if (errorObj?.code === 'NETWORK_ERROR' || errorObj?.message?.includes('Network Error')) {
+    if (error && typeof error === 'object' && 'code' in error && error.code === ErrorCode.NETWORK_ERROR) {
+        return 'Ошибка сети. Проверьте подключение к интернету'
+    }
+    if (error && typeof error === 'object' && 'message' in error && typeof error.message === 'string' && error.message.includes('Network Error')) {
         return 'Ошибка сети. Проверьте подключение к интернету'
     }
 
     // Таймаут
-    if (errorObj?.code === 'TIMEOUT' || errorObj?.message?.includes('timeout')) {
+    if (error && typeof error === 'object' && 'code' in error && error.code === ErrorCode.TIMEOUT) {
         return 'Превышено время ожидания. Попробуйте позже'
+    }
+    if (error && typeof error === 'object' && 'message' in error && typeof error.message === 'string' && error.message.includes('timeout')) {
+        return 'Превышено время ожидания. Попробуйте позже'
+    }
+
+    // Если есть сообщение от NestJS
+    if (nestJsMessage && typeof nestJsMessage === 'string' && nestJsMessage.length < 100 && !nestJsMessage.includes('Error:')) {
+        return nestJsMessage
     }
 
     // Если ничего не подошло, возвращаем общее сообщение

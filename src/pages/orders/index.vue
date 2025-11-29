@@ -93,7 +93,8 @@
             newOrder.value = { serviceId: '' }
             await refresh()
         } catch (error: unknown) {
-            toast.showError(error, 'createOrder')
+            const errorMessage = error instanceof Error ? error.message : String(error)
+            toast.showError('Ошибка создания заказа', errorMessage)
         }
     }
 </script>

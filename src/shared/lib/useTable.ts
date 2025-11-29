@@ -1,6 +1,7 @@
 import { ref, computed } from 'vue'
 import { useToast } from './useToast'
 import type { ErrorContext } from './errorHandler'
+import { SortOrder } from '../types/enums'
 
 export interface TableColumn<T = Record<string, unknown>> {
     key: keyof T
@@ -23,7 +24,7 @@ export function useTable<T extends { id: string | number }>(config: TableConfig<
     const items = ref<T[]>([])
     const isLoading = ref(false)
     const sortBy = ref<keyof T | null>(null)
-    const sortOrder = ref<'asc' | 'desc'>('asc')
+    const sortOrder = ref<SortOrder>(SortOrder.ASC)
     const searchQuery = ref('')
 
     const filteredItems = computed(() => {
@@ -42,24 +43,25 @@ export function useTable<T extends { id: string | number }>(config: TableConfig<
         // Сортировка
         if (sortBy.value) {
             filtered = [...filtered].sort((a, b) => {
-                const aValue = (a as Record<string, unknown>)[sortBy.value!]
-                const bValue = (b as Record<string, unknown>)[sortBy.value!]
+                const sortKey = sortBy.value!
+                const aValue: unknown = (a as Record<string, unknown>)[String(sortKey)]
+                const bValue: unknown = (b as Record<string, unknown>)[String(sortKey)]
 
                 if (typeof aValue === 'string' && typeof bValue === 'string') {
-                    return sortOrder.value === 'asc' 
+                    return sortOrder.value === SortOrder.ASC 
                         ? aValue.localeCompare(bValue)
                         : bValue.localeCompare(aValue)
                 }
                 
                 if (typeof aValue === 'number' && typeof bValue === 'number') {
-                    if (aValue < bValue) return sortOrder.value === 'asc' ? -1 : 1
-                    if (aValue > bValue) return sortOrder.value === 'asc' ? 1 : -1
+                    if (aValue < bValue) return sortOrder.value === SortOrder.ASC ? -1 : 1
+                    if (aValue > bValue) return sortOrder.value === SortOrder.ASC ? 1 : -1
                 }
                 
                 // Для других типов конвертируем в строку
                 const aStr = String(aValue)
                 const bStr = String(bValue)
-                return sortOrder.value === 'asc' 
+                return sortOrder.value === SortOrder.ASC 
                     ? aStr.localeCompare(bStr)
                     : bStr.localeCompare(aStr)
                 return 0
@@ -73,8 +75,9 @@ export function useTable<T extends { id: string | number }>(config: TableConfig<
         isLoading.value = true
         try {
             items.value = await config.fetchData()
-        } catch (error) {
-            showError(error, config.errorContext)
+        } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : String(error)
+            showError(errorMessage, config.errorContext)
         } finally {
             isLoading.value = false
         }
@@ -87,17 +90,18 @@ export function useTable<T extends { id: string | number }>(config: TableConfig<
             await config.deleteItem(id)
             items.value = items.value.filter(item => item.id !== id)
             showSuccess('Элемент удален')
-        } catch (error) {
-            showError(error, config.errorContext)
+        } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : String(error)
+            showError(errorMessage, config.errorContext)
         }
     }
 
     const sort = (column: keyof T) => {
         if (sortBy.value === column) {
-            sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc'
+            sortOrder.value = sortOrder.value === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC
         } else {
             sortBy.value = column
-            sortOrder.value = 'asc'
+            sortOrder.value = SortOrder.ASC
         }
     }
 

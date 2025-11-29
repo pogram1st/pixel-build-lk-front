@@ -1,4 +1,4 @@
-import api, { unwrapStrapiResponse, unwrapStrapiCollection } from './api'
+import api from './api'
 import { ApiEndpoints } from '../config/apiEndpoints'
 import type { Order } from '../types/api'
 
@@ -12,18 +12,16 @@ export interface CreateOrderDto {
 }
 
 export const orderApi = {
-    getMyOrders: async () => {
-        const response = await api.get<{ data: Order[]; meta?: Record<string, unknown> }>(
-            ApiEndpoints.ORDERS.MY
-        )
-        return unwrapStrapiCollection(response)
+    getMyOrders: async (): Promise<Array<Order>> => {
+        const response = await api.get<Array<Order>>(ApiEndpoints.ORDERS.MY)
+        return response.data
     },
-    getOrder: async (id: number) => {
-        const response = await api.get<{ data: Order }>(ApiEndpoints.ORDERS.BY_ID(id))
-        return unwrapStrapiResponse(response)
+    getOrder: async (id: number): Promise<Order> => {
+        const response = await api.get<Order>(ApiEndpoints.ORDERS.BY_ID(id))
+        return response.data
     },
-    create: async (data: CreateOrderDto) => {
-        const response = await api.post<{ data: Order }>(ApiEndpoints.ORDERS.CREATE, { data: data })
-        return unwrapStrapiResponse(response)
+    create: async (data: CreateOrderDto): Promise<Order> => {
+        const response = await api.post<Order>(ApiEndpoints.ORDERS.CREATE, data)
+        return response.data
     },
 }

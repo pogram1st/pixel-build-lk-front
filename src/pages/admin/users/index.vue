@@ -172,7 +172,8 @@
             userForm.value = { email: '', password: '', name: '', phone: '', role: 'USER' }
             await refresh()
         } catch (error: unknown) {
-            toast.showError(error, 'createUser')
+            const errorMessage = error instanceof Error ? error.message : String(error)
+            toast.showError('Ошибка создания пользователя', errorMessage)
         }
     }
 
@@ -180,9 +181,9 @@
         editForm.value = {
             id: user.id,
             email: user.email,
-            name: user.username, // Use username as name
+            name: user.name,
             phone: user.phone || '',
-            role: user.role?.type === 'admin' ? 'ADMIN' : 'USER'
+            role: user.role === 'ADMIN' || user.role === 'SUPER_ADMIN' ? 'ADMIN' : 'USER'
         }
         showEditModal.value = true
     }
@@ -194,7 +195,8 @@
             showEditModal.value = false
             await refresh()
         } catch (error: unknown) {
-            toast.showError(error, 'updateUser')
+            const errorMessage = error instanceof Error ? error.message : String(error)
+            toast.showError('Ошибка обновления пользователя', errorMessage)
         }
     }
 
@@ -205,7 +207,8 @@
             toast.showSuccess('Пользователь успешно удален')
             await refresh()
         } catch (error: unknown) {
-            toast.showError(error, 'deleteUser')
+            const errorMessage = error instanceof Error ? error.message : String(error)
+            toast.showError('Ошибка удаления пользователя', errorMessage)
         }
     }
 </script>

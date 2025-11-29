@@ -104,7 +104,7 @@
     })
 
     const userData = ref({
-        name: user.value?.username || user.value?.name || '',
+        name: user.value?.name || '',
         email: user.value?.email || '',
         phone: user.value?.phone || '',
     })
@@ -140,7 +140,7 @@
         newUser => {
             if (newUser) {
                 userData.value = {
-                    name: newUser.username || newUser.name || '',
+                    name: newUser.name || '',
                     email: newUser.email,
                     phone: newUser.phone || '',
                 }
@@ -227,9 +227,17 @@
             
             // Обновляем данные пользователя после успешного обновления
             const updatedUser = await userApi.getMe()
-            authStore.setUser(updatedUser)
+            authStore.setUser({
+                id: updatedUser.id,
+                email: updatedUser.email,
+                phone: updatedUser.phone ?? undefined,
+                name: updatedUser.name,
+                role: (updatedUser.role === 'ADMIN' || updatedUser.role === 'SUPER_ADMIN' ? 'ADMIN' : 'USER') as 'USER' | 'ADMIN',
+                createdAt: updatedUser.createdAt,
+            })
         } catch (error: unknown) {
-            toast.showError(error, 'updateProfile')
+            const errorMessage = error instanceof Error ? error.message : String(error)
+            toast.showError('Ошибка обновления профиля', errorMessage)
         } finally {
             profileLoading.value = false
         }
@@ -245,7 +253,7 @@
         try {
             await userApi.update(user.value.id, {
                 currentPassword: passwordData.value.currentPassword,
-                password: passwordData.value.newPassword,
+                newPassword: passwordData.value.newPassword,
             })
             toast.showSuccess('Пароль изменен')
             passwordData.value = {
@@ -258,7 +266,8 @@
                 passwordErrors[key] = ''
             })
         } catch (error: unknown) {
-            toast.showError(error, 'changePassword')
+            const errorMessage = error instanceof Error ? error.message : String(error)
+            toast.showError('Ошибка изменения пароля', errorMessage)
         } finally {
             passwordLoading.value = false
         }

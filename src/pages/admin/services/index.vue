@@ -139,7 +139,8 @@
             serviceForm.value = { name: '', price: '', description: '' }
             await refresh()
         } catch (error: unknown) {
-            toast.showError(error, 'createService')
+            const errorMessage = error instanceof Error ? error.message : String(error)
+            toast.showError('Ошибка создания услуги', errorMessage)
         }
     }
 
@@ -148,7 +149,7 @@
             id: service.id,
             name: service.name,
             price: service.price?.toString() || '',
-            description: service.description || ''
+            description: service.desc || ''
         }
         showEditModal.value = true
     }
@@ -163,7 +164,8 @@
             showEditModal.value = false
             await refresh()
         } catch (error: unknown) {
-            toast.showError(error, 'updateService')
+            const errorMessage = error instanceof Error ? error.message : String(error)
+            toast.showError('Ошибка обновления услуги', errorMessage)
         }
     }
 
@@ -174,7 +176,8 @@
             toast.showSuccess('Услуга успешно удалена')
             await refresh()
         } catch (error: unknown) {
-            toast.showError(error, 'deleteService')
+            const errorMessage = error instanceof Error ? error.message : String(error)
+            toast.showError('Ошибка удаления услуги', errorMessage)
         }
     }
 </script>

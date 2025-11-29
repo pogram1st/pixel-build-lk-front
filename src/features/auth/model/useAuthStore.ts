@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import { authApiService, type AuthResponse, type UserResponse } from '@shared/api/authApi'
 import * as userApi from '@shared/api/userApi'
 import { CookieNames } from '@shared/config/cookies'
+import { UserRole } from '@shared/types/enums'
 
 interface User {
     id: string // Изменено на string для совместимости с auth-service
@@ -24,7 +25,7 @@ export const useAuthStore = defineStore('auth', () => {
     // Computed (getters)
     const isAuthenticated = computed(() => !!user.value)
     const isAdmin = computed(
-        () => user.value?.role?.type === 'admin' || user.value?.role?.type === 'Admin'
+        () => user.value?.role?.type === UserRole.ADMIN || user.value?.role?.type === UserRole.SUPER_ADMIN
     )
 
     // Actions

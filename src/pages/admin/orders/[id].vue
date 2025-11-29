@@ -45,7 +45,7 @@
                         <div
                             v-if="
                                 order.files &&
-                                order.files.filter((f) => f.type === 'client_material').length > 0
+                                order.files.filter((f) => f.type === 'CLIENT_MATERIAL').length > 0
                             "
                         >
                             <label
@@ -56,7 +56,7 @@
                             <div class="space-y-2">
                                 <div
                                     v-for="file in order.files.filter(
-                                        f => f.type === 'client_material'
+                                        f => f.type === 'CLIENT_MATERIAL'
                                     )"
                                     :key="file.id"
                                     class="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-700 rounded"
@@ -65,9 +65,10 @@
                                         file.filename
                                     }}</span>
                                     <a
-                                        :href="`${apiBase}/uploads/${file.path.split('/').pop()}`"
+                                        :href="file.url || '#'"
                                         target="_blank"
                                         class="text-primary-600 hover:text-primary-800 text-sm"
+                                        :class="{ 'opacity-50 cursor-not-allowed': !file.url }"
                                     >
                                         Скачать
                                     </a>
@@ -78,7 +79,7 @@
                         <div
                             v-if="
                                 order.files &&
-                                order.files.filter((f) => f.type === 'admin_file').length > 0
+                                order.files.filter((f) => f.type === 'ADMIN_FILE').length > 0
                             "
                         >
                             <label
@@ -88,7 +89,7 @@
                             </label>
                             <div class="space-y-2">
                                 <div
-                                    v-for="file in order.files.filter((f) => f.type === 'admin_file')"
+                                    v-for="file in order.files.filter((f) => f.type === 'ADMIN_FILE')"
                                     :key="file.id"
                                     class="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-700 rounded"
                                 >
@@ -97,7 +98,7 @@
                                     }}</span>
                                     <div class="flex items-center space-x-2">
                                         <a
-                                            :href="`${apiBase}/uploads/${file.path.split('/').pop()}`"
+                                            :href="file.url || '#'"
                                             target="_blank"
                                             class="text-primary-600 hover:text-primary-800 text-sm"
                                         >
@@ -129,13 +130,13 @@
                     <div
                         v-if="
                             order.files &&
-                            order.files.filter((f) => f.type === 'progress_screenshot').length > 0
+                                order.files.filter((f) => f.type === 'PROGRESS_SCREENSHOT').length > 0
                         "
                         class="space-y-3"
                     >
                         <div
                             v-for="file in order.files
-                                .filter((f) => f.type === 'progress_screenshot')
+                                .filter((f) => f.type === 'PROGRESS_SCREENSHOT')
                                 .sort(
                                     (a, b) =>
                                         new Date(b.createdAt).getTime() -
@@ -154,7 +155,7 @@
                             </div>
                             <div class="flex items-center space-x-2">
                                 <a
-                                    :href="`${apiBase}/uploads/${file.path.split('/').pop()}`"
+                                    :href="file.url || '#'"
                                     target="_blank"
                                     class="text-primary-600 hover:text-primary-800 text-sm"
                                 >
@@ -347,8 +348,6 @@
     })
 
     const route = useRoute()
-    const config = useRuntimeConfig()
-    const apiBase = config.public.apiBase || 'http://localhost:3000'
     const orderId = Number(route.params.id)
     const toast = useToast()
 
@@ -400,7 +399,8 @@
             toast.showSuccess('Заказ обновлен')
             await refresh()
         } catch (error: unknown) {
-            toast.showError(error, 'updateOrder')
+            const errorMessage = error instanceof Error ? error.message : String(error)
+            toast.showError('Ошибка обновления заказа', errorMessage)
         }
     }
 
@@ -411,7 +411,8 @@
             showStatusModal.value = false
             await refresh()
         } catch (error: unknown) {
-            toast.showError(error, 'updateStatus')
+            const errorMessage = error instanceof Error ? error.message : String(error)
+            toast.showError('Ошибка обновления статуса', errorMessage)
         }
     }
 
@@ -419,14 +420,15 @@
         if (!selectedFile.value) return
 
         try {
-            await adminApi.orders.uploadFile(orderId, selectedFile.value, 'progress_screenshot')
+            await adminApi.orders.uploadFile(orderId, selectedFile.value, 'PROGRESS_SCREENSHOT')
             toast.showSuccess('Файл загружен')
             showUploadModal.value = false
             selectedFile.value = null
             if (fileInput.value) fileInput.value.value = ''
             await refresh()
         } catch (error: unknown) {
-            toast.showError(error, 'uploadFile')
+            const errorMessage = error instanceof Error ? error.message : String(error)
+            toast.showError('Ошибка загрузки файла', errorMessage)
         }
     }
 
@@ -438,7 +440,8 @@
             toast.showSuccess('Файл удален')
             await refresh()
         } catch (error: unknown) {
-            toast.showError(error, 'deleteFile')
+            const errorMessage = error instanceof Error ? error.message : String(error)
+            toast.showError('Ошибка удаления файла', errorMessage)
         }
     }
 
