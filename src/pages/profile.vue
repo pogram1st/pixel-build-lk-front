@@ -6,9 +6,9 @@
             <form @submit.prevent="updateProfile">
                 <h2 class="text-xl font-semibold mb-4">Личная информация</h2>
                 <div class="space-y-4">
-                    <AppInput 
-                        v-model="userData.name" 
-                        label="Имя" 
+                    <AppInput
+                        v-model="userData.name"
+                        label="Имя"
                         placeholder="Ваше имя"
                         :error="errors.name"
                         required
@@ -224,7 +224,7 @@
 
             await userApi.update(user.value.id, updateData)
             toast.showSuccess('Профиль обновлен')
-            
+
             // Обновляем данные пользователя после успешного обновления
             const updatedUser = await userApi.getMe()
             authStore.setUser({
@@ -232,7 +232,9 @@
                 email: updatedUser.email,
                 phone: updatedUser.phone ?? undefined,
                 name: updatedUser.name,
-                role: (updatedUser.role === 'ADMIN' || updatedUser.role === 'SUPER_ADMIN' ? 'ADMIN' : 'USER') as 'USER' | 'ADMIN',
+                role: (updatedUser.role === 'ADMIN' || updatedUser.role === 'SUPER_ADMIN'
+                    ? 'ADMIN'
+                    : 'USER') as 'USER' | 'ADMIN',
                 createdAt: updatedUser.createdAt,
             })
         } catch (error: unknown) {

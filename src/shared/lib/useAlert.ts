@@ -8,11 +8,7 @@ export function useAlert() {
         alertStore.success(message, description)
     }
 
-    const showError = (
-        error: unknown,
-        context: ErrorContext = 'general',
-        description?: string
-    ) => {
+    const showError = (error: unknown, context: ErrorContext = 'general', description?: string) => {
         const message = getErrorMessage(error, context)
         alertStore.error(message, description)
     }

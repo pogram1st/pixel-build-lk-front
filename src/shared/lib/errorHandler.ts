@@ -53,14 +53,14 @@ export function getErrorMessage(error: unknown, context: ErrorContext = 'general
 
     // Специфичные сообщения для разных контекстов
     const contextMessages: Record<ErrorContext, Record<number, string>> = {
-            login: {
-                400: 'Неверный email или пароль',
-                401: 'Неверный email или пароль',
-                403: 'Доступ запрещен',
-                404: 'Пользователь не найден',
-                422: 'Неверный формат email или пароля',
-                500: 'Ошибка входа. Попробуйте позже',
-            },
+        login: {
+            400: 'Неверный email или пароль',
+            401: 'Неверный email или пароль',
+            403: 'Доступ запрещен',
+            404: 'Пользователь не найден',
+            422: 'Неверный формат email или пароля',
+            500: 'Ошибка входа. Попробуйте позже',
+        },
         register: {
             400: 'Ошибка регистрации. Проверьте данные',
             409: 'Пользователь с таким email уже существует',
@@ -195,7 +195,7 @@ export function getErrorMessage(error: unknown, context: ErrorContext = 'general
     if (!error || typeof error !== 'object') {
         return contextMessages.general[500]
     }
-    
+
     const errorObj: ErrorWithResponse = error
     const nestJsMessage = errorObj?.response?.data?.message || errorObj?.message
     const status = errorObj?.response?.status
@@ -263,10 +263,21 @@ export function getErrorMessage(error: unknown, context: ErrorContext = 'general
     }
 
     // Ошибки сети
-    if (error && typeof error === 'object' && 'code' in error && error.code === ErrorCode.NETWORK_ERROR) {
+    if (
+        error &&
+        typeof error === 'object' &&
+        'code' in error &&
+        error.code === ErrorCode.NETWORK_ERROR
+    ) {
         return 'Ошибка сети. Проверьте подключение к интернету'
     }
-    if (error && typeof error === 'object' && 'message' in error && typeof error.message === 'string' && error.message.includes('Network Error')) {
+    if (
+        error &&
+        typeof error === 'object' &&
+        'message' in error &&
+        typeof error.message === 'string' &&
+        error.message.includes('Network Error')
+    ) {
         return 'Ошибка сети. Проверьте подключение к интернету'
     }
 
@@ -274,12 +285,23 @@ export function getErrorMessage(error: unknown, context: ErrorContext = 'general
     if (error && typeof error === 'object' && 'code' in error && error.code === ErrorCode.TIMEOUT) {
         return 'Превышено время ожидания. Попробуйте позже'
     }
-    if (error && typeof error === 'object' && 'message' in error && typeof error.message === 'string' && error.message.includes('timeout')) {
+    if (
+        error &&
+        typeof error === 'object' &&
+        'message' in error &&
+        typeof error.message === 'string' &&
+        error.message.includes('timeout')
+    ) {
         return 'Превышено время ожидания. Попробуйте позже'
     }
 
     // Если есть сообщение от NestJS
-    if (nestJsMessage && typeof nestJsMessage === 'string' && nestJsMessage.length < 100 && !nestJsMessage.includes('Error:')) {
+    if (
+        nestJsMessage &&
+        typeof nestJsMessage === 'string' &&
+        nestJsMessage.length < 100 &&
+        !nestJsMessage.includes('Error:')
+    ) {
         return nestJsMessage
     }
 

@@ -9,10 +9,3 @@ export enum HttpMethod {
     HEAD = "HEAD",
     OPTIONS = "OPTIONS"
 }
-
-
-
-
-
-
-

@@ -55,7 +55,10 @@ export const authApiService = {
         const response = await authApi.get(ApiEndpoints.AUTH.ME)
         return response.data
     },
-    verify: async (): Promise<{ valid: boolean; user: { id: number; email: string; role: string } }> => {
+    verify: async (): Promise<{
+        valid: boolean
+        user: { id: number; email: string; role: string }
+    }> => {
         const response = await authApi.get(ApiEndpoints.AUTH.VERIFY)
         return response.data
     },

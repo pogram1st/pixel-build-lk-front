@@ -161,7 +161,7 @@
             id: status.id,
             name: status.name,
             color: status.color || '#3b82f6',
-            order: status.order
+            order: status.order,
         }
         showEditModal.value = true
     }

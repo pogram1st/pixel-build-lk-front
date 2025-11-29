@@ -84,6 +84,8 @@ export default [
 
             // 🧹 Доп. форматирование
             "no-multi-spaces": ["error"],
+            "no-multiple-empty-lines": ["error", { max: 1, maxEOF: 0 }],
+            "@stylistic/no-multiple-empty-lines": "off",
             "padding-line-between-statements": [
                 "error",
                 { blankLine: "always", prev: "*", next: "return" },
@@ -130,6 +132,7 @@ export default [
             "@stylistic/object-curly-spacing": ["error", "always"],
             "@stylistic/space-before-blocks": ["error", "always"],
             "@stylistic/array-bracket-spacing": ["error", "never"],
+            "@stylistic/eol-last": ["error", "always"],
 
             // 🧩 Vue специфичное
             "vue/multi-word-component-names": "off",
@@ -181,18 +184,17 @@ export default [
         }
     },
     {
+        files: ["**/*.vue"],
+        rules: {
+            "no-multiple-empty-lines": ["error", { max: 1, maxEOF: 0 }],
+            "@stylistic/no-multiple-empty-lines": ["error", { max: 1, maxEOF: 0 }],
+            "@stylistic/eol-last": ["error", "always"]
+        }
+    },
+    {
         ignores: [
             "node_modules", "dist", ".output", ".nuxt"
         ]
     }
 ]
-
-
-
-
-
-
-
-
-
 

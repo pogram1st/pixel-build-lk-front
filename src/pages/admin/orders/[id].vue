@@ -45,7 +45,7 @@
                         <div
                             v-if="
                                 order.files &&
-                                order.files.filter((f) => f.type === 'CLIENT_MATERIAL').length > 0
+                                order.files.filter(f => f.type === 'CLIENT_MATERIAL').length > 0
                             "
                         >
                             <label
@@ -79,7 +79,7 @@
                         <div
                             v-if="
                                 order.files &&
-                                order.files.filter((f) => f.type === 'ADMIN_FILE').length > 0
+                                order.files.filter(f => f.type === 'ADMIN_FILE').length > 0
                             "
                         >
                             <label
@@ -89,7 +89,7 @@
                             </label>
                             <div class="space-y-2">
                                 <div
-                                    v-for="file in order.files.filter((f) => f.type === 'ADMIN_FILE')"
+                                    v-for="file in order.files.filter(f => f.type === 'ADMIN_FILE')"
                                     :key="file.id"
                                     class="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-700 rounded"
                                 >
@@ -130,13 +130,13 @@
                     <div
                         v-if="
                             order.files &&
-                                order.files.filter((f) => f.type === 'PROGRESS_SCREENSHOT').length > 0
+                            order.files.filter(f => f.type === 'PROGRESS_SCREENSHOT').length > 0
                         "
                         class="space-y-3"
                     >
                         <div
                             v-for="file in order.files
-                                .filter((f) => f.type === 'PROGRESS_SCREENSHOT')
+                                .filter(f => f.type === 'PROGRESS_SCREENSHOT')
                                 .sort(
                                     (a, b) =>
                                         new Date(b.createdAt).getTime() -
@@ -230,11 +230,7 @@
                             >
                                 Сумма
                             </label>
-                            <AppInput
-                                v-model="formData.amount"
-                                type="number"
-                                placeholder="0"
-                            />
+                            <AppInput v-model="formData.amount" type="number" placeholder="0" />
                         </div>
                         <div>
                             <label

@@ -145,11 +145,11 @@
     }
 
     const editService = (service: Service) => {
-        editForm.value = { 
+        editForm.value = {
             id: service.id,
             name: service.name,
             price: service.price?.toString() || '',
-            description: service.desc || ''
+            description: service.desc || '',
         }
         showEditModal.value = true
     }

@@ -124,8 +124,11 @@
         layout: 'admin',
     })
 
-    const { data: stats } = await useAsyncData<DashboardStats>('admin-dashboard-stats', async () => {
-        const data = await adminApi.dashboard.getStats()
-        return data
-    })
+    const { data: stats } = await useAsyncData<DashboardStats>(
+        'admin-dashboard-stats',
+        async () => {
+            const data = await adminApi.dashboard.getStats()
+            return data
+        }
+    )
 </script>

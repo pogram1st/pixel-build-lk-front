@@ -48,20 +48,20 @@ export function useTable<T extends { id: string | number }>(config: TableConfig<
                 const bValue: unknown = (b as Record<string, unknown>)[String(sortKey)]
 
                 if (typeof aValue === 'string' && typeof bValue === 'string') {
-                    return sortOrder.value === SortOrder.ASC 
+                    return sortOrder.value === SortOrder.ASC
                         ? aValue.localeCompare(bValue)
                         : bValue.localeCompare(aValue)
                 }
-                
+
                 if (typeof aValue === 'number' && typeof bValue === 'number') {
                     if (aValue < bValue) return sortOrder.value === SortOrder.ASC ? -1 : 1
                     if (aValue > bValue) return sortOrder.value === SortOrder.ASC ? 1 : -1
                 }
-                
+
                 // Для других типов конвертируем в строку
                 const aStr = String(aValue)
                 const bStr = String(bValue)
-                return sortOrder.value === SortOrder.ASC 
+                return sortOrder.value === SortOrder.ASC
                     ? aStr.localeCompare(bStr)
                     : bStr.localeCompare(aStr)
                 return 0

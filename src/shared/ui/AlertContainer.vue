@@ -14,25 +14,25 @@
 </template>
 
 <script setup lang="ts">
-import { useAlertStore } from "../stores/useAlertStore"
-import Alert from "./Alert.vue"
+    import { useAlertStore } from '../stores/useAlertStore'
+    import Alert from './Alert.vue'
 
-const alertStore = useAlertStore()
+    const alertStore = useAlertStore()
 </script>
 
 <style scoped>
-.alert-enter-active,
-.alert-leave-active {
-    transition: all 0.3s ease;
-}
+    .alert-enter-active,
+    .alert-leave-active {
+        transition: all 0.3s ease;
+    }
 
-.alert-enter-from {
-    opacity: 0;
-    transform: translateX(100%);
-}
+    .alert-enter-from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
 
-.alert-leave-to {
-    opacity: 0;
-    transform: translateX(100%);
-}
+    .alert-leave-to {
+        opacity: 0;
+        transform: translateX(100%);
+    }
 </style>

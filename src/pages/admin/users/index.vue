@@ -183,7 +183,7 @@
             email: user.email,
             name: user.name,
             phone: user.phone || '',
-            role: user.role === 'ADMIN' || user.role === 'SUPER_ADMIN' ? 'ADMIN' : 'USER'
+            role: user.role === 'ADMIN' || user.role === 'SUPER_ADMIN' ? 'ADMIN' : 'USER',
         }
         showEditModal.value = true
     }

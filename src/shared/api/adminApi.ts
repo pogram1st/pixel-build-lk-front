@@ -1,6 +1,17 @@
 import api from './api'
 import { ApiEndpoints } from '../config/apiEndpoints'
-import type { Service, Status, AdminUser, Order, OrderFile, Comment, DashboardStats, CreateOrderByAdminDto, CreateAdminUserDto, UpdateAdminUserDto } from '../types/api'
+import type {
+    Service,
+    Status,
+    AdminUser,
+    Order,
+    OrderFile,
+    Comment,
+    DashboardStats,
+    CreateOrderByAdminDto,
+    CreateAdminUserDto,
+    UpdateAdminUserDto,
+} from '../types/api'
 
 export interface UpdateOrderDto {
     description?: string
@@ -24,7 +35,10 @@ export const adminApi = {
             const response = await api.post<Service>(ApiEndpoints.ADMIN.SERVICES.ALL, data)
             return response.data
         },
-        update: async (id: number, data: { name?: string; price?: number; desc?: string }): Promise<Service> => {
+        update: async (
+            id: number,
+            data: { name?: string; price?: number; desc?: string }
+        ): Promise<Service> => {
             const response = await api.put<Service>(ApiEndpoints.ADMIN.SERVICES.BY_ID(id), data)
             return response.data
         },
@@ -41,7 +55,10 @@ export const adminApi = {
             const response = await api.post<Status>(ApiEndpoints.ADMIN.STATUSES.ALL, data)
             return response.data
         },
-        update: async (id: number, data: { name?: string; color?: string; order?: number }): Promise<Status> => {
+        update: async (
+            id: number,
+            data: { name?: string; color?: string; order?: number }
+        ): Promise<Status> => {
             const response = await api.put<Status>(ApiEndpoints.ADMIN.STATUSES.BY_ID(id), data)
             return response.data
         },
@@ -51,14 +68,22 @@ export const adminApi = {
     },
     users: {
         getAll: async (): Promise<Array<Omit<AdminUser, 'password'>>> => {
-            const response = await api.get<Array<Omit<AdminUser, 'password'>>>(ApiEndpoints.ADMIN.USERS.ALL)
+            const response = await api.get<Array<Omit<AdminUser, 'password'>>>(
+                ApiEndpoints.ADMIN.USERS.ALL
+            )
             return response.data
         },
         create: async (data: CreateAdminUserDto): Promise<Omit<AdminUser, 'password'>> => {
-            const response = await api.post<Omit<AdminUser, 'password'>>(ApiEndpoints.ADMIN.USERS.ALL, data)
+            const response = await api.post<Omit<AdminUser, 'password'>>(
+                ApiEndpoints.ADMIN.USERS.ALL,
+                data
+            )
             return response.data
         },
-        update: async (id: number, data: UpdateAdminUserDto): Promise<Omit<AdminUser, 'password'>> => {
+        update: async (
+            id: number,
+            data: UpdateAdminUserDto
+        ): Promise<Omit<AdminUser, 'password'>> => {
             const response = await api.put<Omit<AdminUser, 'password'>>(
                 ApiEndpoints.ADMIN.USERS.BY_ID(id),
                 data
@@ -87,10 +112,7 @@ export const adminApi = {
             return response.data
         },
         updateStatus: async (id: number, data: { statusId: number }): Promise<Order> => {
-            const response = await api.put<Order>(
-                ApiEndpoints.ADMIN.ORDERS.UPDATE_STATUS(id),
-                data
-            )
+            const response = await api.put<Order>(ApiEndpoints.ADMIN.ORDERS.UPDATE_STATUS(id), data)
             return response.data
         },
         uploadFile: async (
@@ -125,7 +147,10 @@ export const adminApi = {
     },
     comments: {
         create: async (data: { orderId: number; text: string }): Promise<Comment> => {
-            const response = await api.post<Comment>(ApiEndpoints.ADMIN.COMMENTS.CREATE(data.orderId), { text: data.text })
+            const response = await api.post<Comment>(
+                ApiEndpoints.ADMIN.COMMENTS.CREATE(data.orderId),
+                { text: data.text }
+            )
             return response.data
         },
     },

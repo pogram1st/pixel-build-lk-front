@@ -25,7 +25,9 @@ export const useAuthStore = defineStore('auth', () => {
     // Computed (getters)
     const isAuthenticated = computed(() => !!user.value)
     const isAdmin = computed(
-        () => user.value?.role?.type === UserRole.ADMIN || user.value?.role?.type === UserRole.SUPER_ADMIN
+        () =>
+            user.value?.role?.type === UserRole.ADMIN ||
+            user.value?.role?.type === UserRole.SUPER_ADMIN
     )
 
     // Actions
@@ -55,7 +57,7 @@ export const useAuthStore = defineStore('auth', () => {
             name: data.user.name,
             role: {
                 type: data.user.role,
-                name: data.user.role
+                name: data.user.role,
             },
         }
         // Используем accessToken (преобразованный из jwt)
@@ -78,7 +80,7 @@ export const useAuthStore = defineStore('auth', () => {
             name: userData.name,
             role: {
                 type: userData.role,
-                name: userData.role
+                name: userData.role,
             },
         }
     }
